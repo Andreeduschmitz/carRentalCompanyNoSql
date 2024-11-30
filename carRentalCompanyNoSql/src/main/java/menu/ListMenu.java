@@ -1,7 +1,6 @@
 package menu;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.mongodb.client.MongoDatabase;
 
 import controller.AddressController;
 import controller.ClientController;
@@ -12,7 +11,7 @@ import utils.Utils;
 
 public class ListMenu {
 
-	public static void listMenu(Connection con) throws SQLException {
+	public static void listMenu(MongoDatabase con) throws Exception {
     	int opcao;
 
     	do {

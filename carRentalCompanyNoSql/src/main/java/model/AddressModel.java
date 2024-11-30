@@ -1,73 +1,78 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.bson.conversions.Bson;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertOneResult;
 
 import bean.AddressBean;
 import bean.ClientBean;
 
 public class AddressModel {
+	public static String ADDRESS_COLLECTION_NAME = "address";
 	
-	public static void create(AddressBean address, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("INSERT INTO public.address("
-				+ "	addresscep, addressstreet, addressneighborhood, addressnumber, addresscomplement, clientid)"
-				+ "	VALUES (?, ?, ?, ?, ?, ?);");
-		ps.setInt(1, address.getAddressCep());
-		ps.setString(2, address.getAddressStreet());
-		ps.setString(3, address.getAddressNeighborhood());
-		ps.setInt(4, address.getAddressNumber());
-		ps.setString(5, address.getAddressComplement());
-		ps.setInt(6, address.getClientId());
-		
-		ps.execute();
-		ps.close();
-	}
+	public static String ADDRESS_COLUMN_ID = "_id";
 	
-	public static void update(AddressBean address, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.address"
-				+ "	SET addressid=?, addresscep=?, addressstreet=?, addressneighborhood=?, addressnumber=?, addresscomplement=?, clientid=?"
-				+ "	WHERE public.address.addressid=?;");
-		ps.setInt(1, address.getAddressCep());
-		ps.setString(2, address.getAddressStreet());
-		ps.setString(3, address.getAddressNeighborhood());
-		ps.setInt(4, address.getAddressNumber());
-		ps.setString(5, address.getAddressComplement());
-		ps.setInt(6, address.getClientId());
-		ps.setInt(7, address.getAddressId());
-		
-		ps.execute();
-		ps.close();
-	}
+	public static String ADDRESS_COLUMN_CEP = "addressCep";
+	public static String ADDRESS_COLUMN_STREET = "addressStreet";
+	public static String ADDRESS_COLUMN_NEIGHBORHOOD = "addressNeighborhood";
+	public static String ADDRESS_COLUMN_NUMBER = "addressNumber";
+	public static String ADDRESS_COLUMN_COMPLEMENT = "addressComplement";
+
+    public static void create(AddressBean address, MongoDatabase connection) {
+    	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
+    	
+        InsertOneResult result = addressCollection.insertOne(address);
+
+        if (result.getInsertedId() != null) {
+            System.out.println("Endereço inserido com sucesso!");
+        } else {
+            System.out.println("Não foi possível inserir o endereço.");
+        }
+    }
 	
-	public static void delete(AddressBean address, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("DELETE FROM public.address"
-				+ " WHERE public.address.addressid=?");
-		ps.setInt(1, address.getAddressId());
-		
-		ps.execute();
-		ps.close();
-	}
+    public static void update(AddressBean address, MongoDatabase connection) throws Exception {
+    	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
+    	
+        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getAddressId());
+
+        Bson updateOperation = Updates.combine(
+            Updates.set(ADDRESS_COLUMN_CEP, address.getAddressCep()),
+            Updates.set(ADDRESS_COLUMN_STREET, address.getAddressStreet()),
+            Updates.set(ADDRESS_COLUMN_NEIGHBORHOOD, address.getAddressNeighborhood()),
+            Updates.set(ADDRESS_COLUMN_NUMBER, address.getAddressNumber()),
+            Updates.set(ADDRESS_COLUMN_COMPLEMENT, address.getAddressComplement())
+        );
+
+        addressCollection.updateOne(filter, updateOperation);
+    }
+
 	
-	public static ArrayList<AddressBean> findAddressByClient(ClientBean client, Connection con) throws SQLException {
-		PreparedStatement ps;
-		ps = con.prepareStatement("SELECT addressid, addresscep, addressstreet, addressneighborhood, addressnumber, addresscomplement, clientid\n"
-				+ "	FROM public.address"
-				+ " WHERE public.address.clientid=?;");
-		ps.setInt(1, client.getClientId());
-		
-		ResultSet result = ps.executeQuery();
-		ArrayList<AddressBean> addresses = new ArrayList<AddressBean>();
-		
-		while(result.next()) {
-			addresses.add(new AddressBean(result.getInt(1), result.getInt(2), result.getString(3), result.getString(4), result.getInt(5), result.getString(6), result.getInt(7)));
-		}
-		
-		return addresses;
-	}
+    public static void delete(AddressBean address, MongoDatabase connection) throws Exception {
+    	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
+    	
+        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getAddressId());
+        addressCollection.deleteOne(filter);
+    }
+
+	
+    public static ArrayList<AddressBean> findAddressByClient(ClientBean client, MongoDatabase connection) throws Exception {
+    	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
+    	
+        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, client.getClientId());
+        FindIterable<AddressBean> result = addressCollection.find(filter);
+        ArrayList<AddressBean> addresses = new ArrayList<>();
+        
+        for (AddressBean address : result) {
+            addresses.add(address);
+        }
+        
+        return addresses;
+    }
 }

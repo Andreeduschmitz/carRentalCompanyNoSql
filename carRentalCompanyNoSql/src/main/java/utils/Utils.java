@@ -1,6 +1,5 @@
 package utils;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -10,6 +9,8 @@ import java.util.Calendar;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.ClientBean;
 import bean.RentalBean;
@@ -45,7 +46,7 @@ public class Utils {
     	return VehicleCategory.fromOrdinal(option - 1);
     }
     
-    public static SellerBean selectSeller(Connection con) throws SQLException {
+    public static SellerBean selectSeller(MongoDatabase con) throws SQLException {
     	ArrayList<SellerBean> sellers = SellerModel.listAll(con);
     	
     	if(sellers == null || sellers.isEmpty()) {
@@ -67,7 +68,7 @@ public class Utils {
         return sellers.get(index - 1);
     }
     
-    public static VehicleBean selectVehicle(Connection con) throws SQLException {
+    public static VehicleBean selectVehicle(MongoDatabase con) throws SQLException {
     	ArrayList<VehicleBean> vehicles = VehicleModel.listAll(con);
     	
     	if(vehicles == null || vehicles.isEmpty()) {
@@ -89,8 +90,8 @@ public class Utils {
         return vehicles.get(index - 1);
     }
     
-    public static ClientBean selectClient(Connection con) throws SQLException {
-    	ArrayList<ClientBean> clients = ClientModel.listAll(con);
+    public static ClientBean selectClient(MongoDatabase con) throws SQLException {
+    	List<ClientBean> clients = ClientModel.listAll(con);
     	
     	if(clients == null || clients.isEmpty()) {
     		System.out.println("Não há nenhum cliente cadastrado");
@@ -111,7 +112,7 @@ public class Utils {
         return clients.get(index - 1);
     }
     
-    public static ClientBean selectClientBySearch(Connection con, long cpf, String name) throws SQLException {
+    public static ClientBean selectClientBySearch(MongoDatabase con, String cpf, String name) throws Exception {
     	ArrayList<ClientBean> clients = ClientModel.search(cpf, name, con);
     	
     	if(clients == null || clients.isEmpty()) {
@@ -133,7 +134,7 @@ public class Utils {
         return clients.get(index - 1);
     }
 
-	public static RentalBean selectRentalByClient(Connection con, ClientBean client) throws SQLException {
+	public static RentalBean selectRentalByClient(MongoDatabase con, ClientBean client) throws SQLException {
 		ArrayList<RentalBean> rentals = RentalModel.searchRentalByClient(client, con);
 		
 		if(rentals == null || rentals.isEmpty()) {
@@ -155,7 +156,7 @@ public class Utils {
         return rentals.get(index - 1);
 	}
 	
-	public static Boolean isVehicleInUse(Connection con, VehicleBean vehicle) throws SQLException {
+	public static Boolean isVehicleInUse(MongoDatabase con, VehicleBean vehicle) throws SQLException {
 		List<RentalBean> vehicleActiveRental = RentalModel.searchRentalByVehicle(vehicle, con);
 		
 		if(vehicleActiveRental == null || !vehicleActiveRental.isEmpty()) {

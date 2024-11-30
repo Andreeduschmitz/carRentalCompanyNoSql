@@ -1,16 +1,20 @@
 package bean;
 
+import org.bson.types.ObjectId;
+
 public class AddressBean {
-	private int addressId;
+	private ObjectId _id;
 	private int addressCep;
 	private String addressStreet;
 	private String addressNeighborhood;
 	private int addressNumber;
 	private String addressComplement;
-	private int clientId;
+	private ObjectId clientId;
 	
+	public AddressBean() {}
+
 	public AddressBean(int adressCep, String adressStreet, String adressNeighborhood, int addressNumber,
-			String adressComplement, int clientId) {
+			String adressComplement, ObjectId clientId) {
 		this.addressCep = adressCep;
 		this.addressStreet = adressStreet;
 		this.addressNeighborhood = adressNeighborhood;
@@ -19,9 +23,9 @@ public class AddressBean {
 		this.clientId = clientId;
 	}
 
-	public AddressBean(int adressId, int adressCep, String adressStreet, String adressNeighborhood, int addressNumber,
-			String adressComplement, int clientId) {
-		this.addressId = adressId;
+	public AddressBean(ObjectId adressId, int adressCep, String adressStreet, String adressNeighborhood, int addressNumber,
+			String adressComplement, ObjectId clientId) {
+		this._id = adressId;
 		this.addressCep = adressCep;
 		this.addressStreet = adressStreet;
 		this.addressNeighborhood = adressNeighborhood;
@@ -30,12 +34,12 @@ public class AddressBean {
 		this.clientId = clientId;
 	}
 
-	public int getAddressId() {
-		return addressId;
+	public ObjectId getAddressId() {
+		return _id;
 	}
 
-	public void setAddressId(int adressId) {
-		this.addressId = adressId;
+	public void setAddressId(ObjectId adressId) {
+		this._id = adressId;
 	}
 
 	public int getAddressCep() {
@@ -78,11 +82,11 @@ public class AddressBean {
 		this.addressComplement = adressComplement;
 	}
 
-	public int getClientId() {
+	public ObjectId getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(int clientId) {
+	public void setClientId(ObjectId clientId) {
 		this.clientId = clientId;
 	}
 

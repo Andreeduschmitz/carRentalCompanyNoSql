@@ -1,7 +1,6 @@
 package menu;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.mongodb.client.MongoDatabase;
 
 import controller.RentalController;
 import controller.SellerController;
@@ -10,7 +9,7 @@ import utils.Utils;
 
 public class ReportMenu {
 
-    public static void reportMenu(Connection con) throws SQLException {
+    public static void reportMenu(MongoDatabase con) throws Exception {
     	int opcao;
     	
     	do {

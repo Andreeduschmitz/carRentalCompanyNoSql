@@ -1,7 +1,6 @@
 package menu;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.mongodb.client.MongoDatabase;
 
 import controller.AddressController;
 import controller.ClientController;
@@ -11,7 +10,7 @@ import utils.Utils;
 
 public class UpdateMenu {
 
-	public static void updateMenu(Connection con) throws SQLException {
+	public static void updateMenu(MongoDatabase con) throws Exception {
 		int opcao;
 		do {
 			System.out.println("Qual alteração você deseja realizar?");

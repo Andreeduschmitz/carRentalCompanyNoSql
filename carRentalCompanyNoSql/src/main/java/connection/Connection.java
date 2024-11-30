@@ -12,7 +12,7 @@ import com.mongodb.client.MongoDatabase;
 public class Connection {
 	private static MongoClient connection;
 
-	public static MongoDatabase getConnection() throws Exception {
+	public static MongoDatabase getDatabase() throws Exception {
 
 		try {
 			if (connection == null) {
@@ -22,10 +22,11 @@ public class Connection {
 			CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 					CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-			MongoDatabase dtb = connection.getDatabase("AulaMongo").withCodecRegistry(pojoCodecRegistry);
+			MongoDatabase dtb = connection.getDatabase("carRentalCompany").withCodecRegistry(pojoCodecRegistry);
 			return dtb;
 
 		} catch (Exception e) {
+			System.out.println("Erro na conexão: " + e.getMessage());
 			throw e;
 		}
 	}

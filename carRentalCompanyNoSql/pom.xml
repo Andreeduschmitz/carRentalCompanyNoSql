@@ -6,10 +6,20 @@
 	<artifactId>carRentalCompanyNoSql</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-sync</artifactId>
 			<version>5.2.1</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.7.4</version>
+		</dependency>
+
 	</dependencies>
 </project>

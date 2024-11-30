@@ -1,11 +1,15 @@
 package bean;
 
+import org.bson.types.ObjectId;
+
 public class SellerBean {
-	private int sellerId;
+	private ObjectId _id;
 	private String sellerName;
 	private String sellerPhone;
 	private String sellerEmail;
 	private boolean isActive;
+	
+	public SellerBean() {}
 
 	public SellerBean(String sellerName, String sellerPhone, String sellerEmail) {
 		this.sellerName = sellerName;
@@ -13,19 +17,19 @@ public class SellerBean {
 		this.sellerEmail = sellerEmail;
 	}
 
-	public SellerBean(int sellerId, String sellerName, String sellerPhone, String sellerEmail) {
-		this.sellerId = sellerId;
+	public SellerBean(ObjectId sellerId, String sellerName, String sellerPhone, String sellerEmail) {
+		this._id = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 		this.sellerEmail = sellerEmail;
 	}
 	
-	public int getSellerId() {
-		return sellerId;
+	public ObjectId getSellerId() {
+		return _id;
 	}
 
-	public void setSellerId(int sellerId) {
-		this.sellerId = sellerId;
+	public void setSellerId(ObjectId sellerId) {
+		this._id = sellerId;
 	}
 
 	public String getSellerName() {

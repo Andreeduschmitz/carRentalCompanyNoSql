@@ -1,90 +1,116 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.conversions.Bson;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertOneResult;
 
 import bean.ClientBean;
 
 public class ClientModel {
+	public static String CLIENT_COLLECTION_NAME = "client";
+	
+	public static String CLIENT_COLUMN_ID = "_id";
+	
+	public static String CLIENT_COLUMN_NAME = "clientName";
+	public static String CLIENT_COLUMN_CPF = "clientCpf";
+	public static String CLIENT_COLUMN_PHONE= "clientPhone";
+	public static String CLIENT_COLUMN_EMAIL = "clientEmail";
+	public static String CLIENT_COLUMN_IS_ACTIVE = "isActive";
+	
+	public static void create(ClientBean client, MongoDatabase connection) {
+		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
+		
+		InsertOneResult result = clientCollection.insertOne(client);
+		
+		if(result.getInsertedId() != null) {
+			System.out.println("Usuario inserido com sucesso!!");			
+		} else {
+			System.out.println("Não foi possivel inserir");
+		}
+ 	}
+	
+	public static void update(ClientBean client, MongoDatabase connection) {
+		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
+		
+		Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getClientId());
 
-	public static void create(ClientBean client, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("INSERT INTO public.client("
-				+ "	clientname, clientcpf, clientphone, clientemail, isActive)"
-				+ "	VALUES (?, ?, ?, ?, ?);");
-		ps.setString(1, client.getClientName());
-		ps.setLong(2, client.getClientCpf());
-		ps.setString(3, client.getClientPhone());
-		ps.setString(4, client.getClientEmail());
-		ps.setBoolean(5, true);
-		ps.execute();
-		ps.close();
-	}
-	
-	public static void update(ClientBean client, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.client"
-				+ "	SET clientname=?, clientcpf=?, clientphone=?, clientemail=?"
-				+ "	WHERE clientid=?;");
-		ps.setString(1, client.getClientName());
-		ps.setLong(2, client.getClientCpf());
-		ps.setString(3, client.getClientPhone());
-		ps.setString(4, client.getClientEmail());
-		ps.setInt(5, client.getClientId());
-		ps.execute();
-		ps.close();
-	}
-	
-	public static void delete(ClientBean client, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.client"
-				+ " SET isActive = ?"
-				+ "	WHERE clientid=?;");
-		ps.setBoolean(1, false);
-		ps.setInt(2, client.getClientId());
-		ps.execute();
-		ps.close();
-	}
-	
-    public static ArrayList<ClientBean> listAll(Connection connectino) throws SQLException {
-        Statement st = (Statement) connectino.createStatement();;
-        ArrayList<ClientBean> list = new ArrayList<ClientBean>();
-        String sql = "SELECT clientid, clientname, clientcpf, clientphone, clientemail"
-        		+ " FROM public.client WHERE public.client.isactive = true;";
-        ResultSet result = st.executeQuery(sql);
+		Bson updates = Updates.combine(
+			Updates.set(CLIENT_COLUMN_NAME, client.getClientName()),
+			Updates.set(CLIENT_COLUMN_CPF, client.getClientCpf()),
+			Updates.set(CLIENT_COLUMN_PHONE, client.getClientPhone()),
+			Updates.set(CLIENT_COLUMN_EMAIL, client.getClientEmail()),
+			Updates.set(CLIENT_COLUMN_IS_ACTIVE, true)
+		);
 
-        while(result.next()) {
-        	list.add(new ClientBean(result.getInt(1), result.getString(2), result.getLong(3), result.getString(4), result.getString(5)));
+		long modifiedCount = clientCollection.updateOne(filter, updates).getModifiedCount();
+
+		if (modifiedCount > 0) {
+			System.out.println("Usuário atualizado com sucesso!");
+		} else {
+			System.out.println("Nenhum usuário foi atualizado.");
+		}
+	}
+	
+    public static void delete(ClientBean client, MongoDatabase connection) {
+    	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
+    	
+        Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getClientId());
+        Bson update = Updates.set(CLIENT_COLUMN_IS_ACTIVE, false);
+
+        long modifiedCount = clientCollection.updateOne(filter, update).getModifiedCount();
+
+        if (modifiedCount > 0) {
+            System.out.println("Usuário desativado com sucesso!");
+        } else {
+            System.out.println("Nenhum usuário foi desativado.");
+        }
+    }
+	
+    public static List<ClientBean> listAll(MongoDatabase connection) {
+    	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
+
+        List<ClientBean> list = new ArrayList<>();
+        
+        Bson filter = Filters.eq(CLIENT_COLUMN_IS_ACTIVE, true);
+        FindIterable<ClientBean> result = clientCollection.find(filter);
+
+        for (ClientBean client : result) {
+            list.add(client);
         }
 
         return list;
     }
-	
-	public static ArrayList<ClientBean> search(long cpf, String name, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ArrayList<ClientBean> list = new ArrayList<ClientBean>();
-		String selectClause = "SELECT clientid, clientname, clientcpf, clientphone, clientemail FROM public.client";
-		String whereClause = " WHERE ";
 
-		if(name != null) {
-	        whereClause += "public.client.clientname ILIKE ? AND public.client.isactive = true;";
-	        ps = connection.prepareStatement(selectClause + whereClause);
-	        ps.setString(1, "%" + name + "%");
-		} else {
-			whereClause += "public.client.clientcpf = ? AND public.client.isactive = true;";
-			ps = connection.prepareStatement(selectClause + whereClause);
-			ps.setLong(1, cpf);
-		}
-		
-        ResultSet result = ps.executeQuery();
+	
+    public static ArrayList<ClientBean> search(String cpf, String name, MongoDatabase connection) {
+    	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
+
+        ArrayList<ClientBean> list = new ArrayList<>();
         
-        while(result.next()) {
-            list.add(new ClientBean(result.getInt(1), result.getString(2), result.getLong(3), result.getString(4), result.getString(5)));
+        Bson filter = Filters.and();
+
+        if (name != null && !name.isEmpty()) {
+            filter = Filters.and(filter, Filters.regex(CLIENT_COLUMN_NAME, ".*" + name + ".*", "i"));
         }
-		return list;
-	}
+
+        if (cpf != null && !cpf.isEmpty()) {
+            filter = Filters.and(filter, Filters.eq(CLIENT_COLUMN_CPF, cpf));
+        }
+
+        filter = Filters.and(filter, Filters.eq(CLIENT_COLUMN_IS_ACTIVE, true));
+
+        for (ClientBean client : clientCollection.find(filter)) {
+            list.add(client);
+        }
+
+        return list;
+    }
 }

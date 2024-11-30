@@ -1,11 +1,11 @@
 package controller;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.RentalBean;
 import bean.SellerBean;
@@ -15,7 +15,7 @@ import utils.Utils;
 
 public class SellerController {
     
-	public static void createSeller(Connection con) throws SQLException {
+	public static void createSeller(MongoDatabase con) throws Exception {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar um novo vendedor:");
         
@@ -33,7 +33,7 @@ public class SellerController {
         System.out.println("Vendedor criado com sucesso!");
     }
 	
-    public static void updateSeller(Connection con) throws SQLException {
+    public static void updateSeller(MongoDatabase con) throws Exception {
     	SellerBean seller = Utils.selectSeller(con);
     	
     	if(seller == null) {
@@ -83,7 +83,7 @@ public class SellerController {
         System.out.println("Informações atualizadas com sucesso!");
     }
     
-    public static void deleteSeller(Connection con) throws SQLException {
+    public static void deleteSeller(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	System.out.println("Digite o nome do vendedor que deseja excluir");
@@ -105,7 +105,7 @@ public class SellerController {
     	
     }
     
-    public static void listAllSellers(Connection con) throws SQLException {
+    public static void listAllSellers(MongoDatabase con) throws Exception {
     	ArrayList<SellerBean> sellers = SellerModel.listAll(con);
     	
     	if(sellers == null || sellers.isEmpty()) {
@@ -117,15 +117,15 @@ public class SellerController {
     	}
     }
     
-    public static void listSellersByName(Connection con) throws SQLException {
+    public static void listSellersByName(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	System.out.println("Digite o nome do vendedor que deseja buscar");
     	String name = input.next();
     	SellerController.listSellersByName(con, name);
     }
     
-    public static void listSellersByName(Connection con, String name) throws SQLException {
-    	ArrayList<SellerBean> sellers = SellerModel.searchByName(con, name);
+    public static void listSellersByName(MongoDatabase con, String name) throws Exception {
+    	ArrayList<SellerBean> sellers = SellerModel.searchByName(name, con);
     	
     	if(sellers == null || sellers.isEmpty()) {
     		System.out.println("Não há nenhum vendedor cadastrado");
@@ -136,7 +136,7 @@ public class SellerController {
     	}
     }
     
-    public static void listRentalsBySellerInPeriod(Connection con) throws SQLException {
+    public static void listRentalsBySellerInPeriod(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	SellerBean seller = Utils.selectSeller(con);
     	

@@ -1,10 +1,10 @@
 package controller;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.AddressBean;
 import bean.ClientBean;
@@ -13,12 +13,12 @@ import utils.Utils;
 
 public class AddressController {
 	
-	public static void createAddress(Connection con) throws SQLException {
-		ClientBean client = Utils.selectClient(con);
-		AddressController.createAddress(con, client);
+	public static void createAddress(MongoDatabase connection) throws Exception {
+		ClientBean client = Utils.selectClient(connection);
+		AddressController.createAddress(connection, client);
 	}
 	
-    public static void createAddress(Connection con, ClientBean client) throws SQLException {
+    public static void createAddress(MongoDatabase connection, ClientBean client) throws Exception {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar um novo endereço:");
         
@@ -45,11 +45,11 @@ public class AddressController {
         }
 
         AddressBean address = new AddressBean(addressCep, addressStreet, addressNeighborhood, addressNumber, addressComplement, client.getClientId());
-        AddressModel.create(address, con);
+        AddressModel.create(address, connection);
         System.out.println("Endereço criado com sucesso!");
     }
 
-    public static void updateAddress(Connection con) throws SQLException {
+    public static void updateAddress(MongoDatabase con) throws Exception {
         Scanner input = new Scanner(System.in);
     	ClientBean client = Utils.selectClient(con);
     	
@@ -126,11 +126,11 @@ public class AddressController {
         System.out.println("Informações atualizadas com sucesso!");
     }
     
-    public static void deleteAddress(Connection con) throws SQLException {
+    public static void deleteAddress(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	System.out.println("Digite o cpf do cliente que deseja listar os endereços");
-    	long cpf = input.nextLong();
+    	String cpf = input.next();
     	
     	ClientBean client = Utils.selectClientBySearch(con, cpf, null);
     	
@@ -157,11 +157,11 @@ public class AddressController {
         System.out.println("Endereço excluído com sucesso!");
     }
     
-    public static void listAddressesByClient(Connection con) throws SQLException {
+    public static void listAddressesByClient(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	System.out.println("Digite o cpf do cliente que deseja listar os endereços");
-    	long cpf = input.nextLong();
+    	String cpf = input.next();
     	
     	ClientBean client = Utils.selectClientBySearch(con, cpf, null);
     	

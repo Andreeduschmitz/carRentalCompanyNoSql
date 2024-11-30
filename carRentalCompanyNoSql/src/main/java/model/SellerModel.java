@@ -1,85 +1,104 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+
+import org.bson.conversions.Bson;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertOneResult;
 
 import bean.SellerBean;
 
 public class SellerModel {
-
-	public static void create(SellerBean seller, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("INSERT INTO public.seller("
-				+ "	sellername, sellerphone, selleremail, isActive)"
-				+ "	VALUES (?, ?, ?, ?);");
-		ps.setString(1, seller.getSellerName());
-		ps.setString(2, seller.getSellerPhone());
-		ps.setString(3, seller.getSellerEmail());
-		ps.setBoolean(4, true);
-		
-		ps.execute();
-		ps.close();
-	}
 	
-	public static void update(SellerBean seller, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.seller"
-				+ "	SET sellername=?, sellerphone=?, selleremail=?"
-				+ "	WHERE public.seller.sellerid=?;");
-		ps.setString(1, seller.getSellerName());
-		ps.setString(2, seller.getSellerPhone());
-		ps.setString(3, seller.getSellerEmail());
-		ps.setInt(4, seller.getSellerId());
-		
-		ps.execute();
-		ps.close();
-	}
+    public static String SELLER_COLLECTION_NAME = "seller";
+    
+    public static String SELLER_COLUMN_ID = "";
+    
+    public static String SELLER_COLUMN_NAME = "sellerName";
+    public static String SELLER_COLUMN_PHONE = "sellerPhone";
+    public static String SELLER_COLUMN_EMAIL = "sellerEmail";
+    public static String SELLER_COLUMN_IS_ACTIVE = "isActive";
+
+    public static void create(SellerBean seller, MongoDatabase connection) {
+    	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
+
+        InsertOneResult result = sellerCollection.insertOne(seller);
+
+        if (result.getInsertedId() != null) {
+            System.out.println("Vendedor inserido com sucesso!");
+        } else {
+            System.out.println("Não foi possível inserir o vendedor.");
+        }
+    }
 	
-	public static void delete(SellerBean seller, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.seller"
-				+ " SET isActive = ?"
-				+ "	WHERE public.seller.sellerid=?;");
-		ps.setBoolean(1, false);
-		ps.setInt(2, seller.getSellerId());
-		
-		ps.execute();
-		ps.close();
-	}
+    public static void update(SellerBean seller, MongoDatabase connection) {
+    	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
+
+        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getSellerId());
+        Bson update = Updates.combine(
+            Updates.set(SELLER_COLLECTION_NAME, seller.getSellerName()),
+            Updates.set(SELLER_COLUMN_PHONE, seller.getSellerPhone()),
+            Updates.set(SELLER_COLUMN_EMAIL, seller.getSellerEmail()),
+            Updates.set(SELLER_COLUMN_IS_ACTIVE, true)
+        );
+
+        long modifiedCount = sellerCollection.updateOne(filter, update).getModifiedCount();
+
+        if (modifiedCount > 0) {
+            System.out.println("Vendedor atualizado com sucesso!");
+        } else {
+            System.out.println("Nenhum vendedor foi atualizado.");
+        }
+    }
 	
-	public static ArrayList<SellerBean> listAll(Connection con) throws SQLException {
-		Statement st;
-		ArrayList<SellerBean> list = new ArrayList<SellerBean>();
-		
-		st = (Statement) con.createStatement();
-		String query = "SELECT sellerid, sellername, sellerphone, selleremail"
-				+ " FROM public.seller WHERE public.seller.isactive = true;";
-		ResultSet result = st.executeQuery(query);
-		
-	    while(result.next()) {
-	        list.add(new SellerBean(result.getInt(1), result.getString(2), result.getString(3), result.getString(4)));
-	    }
+    public static void delete(SellerBean seller, MongoDatabase connection) {
+    	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
 
-	    return list;
-	}
+        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getSellerId());
+        Bson update = Updates.set(SELLER_COLUMN_IS_ACTIVE, false);
 
-	public static ArrayList<SellerBean> searchByName(Connection con, String name) throws SQLException {
-		PreparedStatement ps;
-		ArrayList<SellerBean> list = new ArrayList<SellerBean>();
-		
-		ps = con.prepareStatement("SELECT sellerid, sellername, sellerphone, selleremail"
-				+ " FROM public.seller WHERE public.seller.sellername ILIKE ? AND public.seller.isactive = true;");
-		ps.setString(1,"%" + name + "%");
-		ResultSet result = ps.executeQuery();
-		
-	    while(result.next()) {
-	        list.add(new SellerBean(result.getInt(1), result.getString(2), result.getString(3), result.getString(4)));
-	    }
+        long modifiedCount = sellerCollection.updateOne(filter, update).getModifiedCount();
 
-	    return list;
-	}
+        if (modifiedCount > 0) {
+            System.out.println("Vendedor desativado com sucesso!");
+        } else {
+            System.out.println("Nenhum vendedor foi desativado.");
+        }
+    }
+	
+    public static ArrayList<SellerBean> listAll(MongoDatabase connection) {
+    	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
+
+        ArrayList<SellerBean> list = new ArrayList<>();
+        Bson filter = Filters.eq(SELLER_COLUMN_IS_ACTIVE, true);
+        FindIterable<SellerBean> result = sellerCollection.find(filter);
+
+        for (SellerBean seller : result) {
+            list.add(seller);
+        }
+
+        return list;
+    }
+
+    public static ArrayList<SellerBean> searchByName(String name, MongoDatabase connection) {
+    	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
+
+        ArrayList<SellerBean> list = new ArrayList<>();
+        Bson filter = Filters.and(
+                Filters.regex(SELLER_COLLECTION_NAME, ".*" + name + ".*", "i"),
+                Filters.eq(SELLER_COLUMN_IS_ACTIVE, true)
+        );
+        FindIterable<SellerBean> result = sellerCollection.find(filter);
+
+        for (SellerBean seller : result) {
+            list.add(seller);
+        }
+
+        return list;
+    }
 }

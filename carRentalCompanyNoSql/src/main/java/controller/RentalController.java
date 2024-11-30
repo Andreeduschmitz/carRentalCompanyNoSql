@@ -1,10 +1,10 @@
 package controller;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.ClientBean;
 import bean.RentalBean;
@@ -15,7 +15,7 @@ import utils.Utils;
 
 public class RentalController {
 
-    public static void createRental(Connection con) throws SQLException {
+    public static void createRental(MongoDatabase con) throws Exception {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar uma nova locação:");
         
@@ -51,12 +51,12 @@ public class RentalController {
         System.out.println("Locação criada com sucesso!");
     }
     
-    public static void createRenovation(Connection con) throws SQLException {
+    public static void createRenovation(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	System.out.println("Insira os dados abaixo para renovar sua locação");
     	
     	System.out.println("Digite o cpf do titular da locação a ser renovada:");
-    	long cpf = input.nextLong();
+    	String cpf = input.next();
     	ClientBean client = Utils.selectClientBySearch(con, cpf, null);
     	
     	if(client == null) {
@@ -88,7 +88,7 @@ public class RentalController {
         System.out.println("Locação renovada com sucesso!");
     }
     
-	public static void listRentalsBySearch(Connection con) throws SQLException {
+	public static void listRentalsBySearch(MongoDatabase con) throws Exception {
 		Scanner input = new Scanner(System.in);
 		List<RentalBean> rentals = null;
 
@@ -140,7 +140,7 @@ public class RentalController {
 		}
 	}
 	
-	public static void countAssociatedRentals(Connection con) throws SQLException {
+	public static void countAssociatedRentals(MongoDatabase con) throws Exception {
 		Scanner input = new Scanner(System.in);
 		
 		System.out.println("Para realizar essa operação, é necessário buscar uma alocação");
@@ -195,7 +195,7 @@ public class RentalController {
 		int rentalIndex = Utils.indexSelector(1, rentals.size() + 1);
 		
 		RentalBean rental = rentals.get(rentalIndex - 1);
-		int associatedRentalsAmount = RentalModel.countAssociatedRentals(rental, con);
+		long associatedRentalsAmount = RentalModel.countAssociatedRentals(rental, con);
 		
 		System.out.println("A quantidade de alocações/renovações associadas a essa alocação é de: " + (associatedRentalsAmount - 1));
 	}

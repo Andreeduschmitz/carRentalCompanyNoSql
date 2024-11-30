@@ -1,114 +1,120 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.bson.conversions.Bson;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertOneResult;
+
 import bean.VehicleBean;
-import enums.VehicleCategory;
 
 public class VehicleModel {
+	
+    public static String VEHICLE_COLLECTION_NAME = "vehicle";
+    
+    public static String VEHICLE_COLUMN_ID = "_id";
+    
+    public static String VEHICLE_COLUMN_PLATE = "vehiclePlate";
+    public static String VEHICLE_COLUMN_MODEL = "vehicleModel";
+    public static String VEHICLE_COLUMN_LAUNCH_YEAR = "vehicleLaunchYear";
+    public static String VEHICLE_COLUMN_BRAND = "vehicleBrand";
+    public static String VEHICLE_COLUMN_CATEGORY = "vehicleCategory";
+    public static String VEHICLE_COLUMN_DAILY_VALUE = "dailyValue";
+    public static String VEHICLE_COLUMN_IS_ACTIVE = "isActive";
 
-	public static void create(VehicleBean vehicle, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("INSERT INTO public.vehicle(\n"
-				+ "	vehicleplate, vehiclemodel, vehiclelaunchyear, vehiclecategory, dailyvalue, vehiclebrand, isActive)"
-				+ "	VALUES (?, ?, ?, ?, ?, ?, ?);");
-		ps.setString(1, vehicle.getVehiclePlate());
-		ps.setString(2, vehicle.getVehicleModel());
-		ps.setInt(3, vehicle.getVehicleLaunchYear());
-		ps.setInt(4, vehicle.getVehicleCategory().ordinal());
-		ps.setDouble(5, vehicle.getDailyValue());
-		ps.setString(6, vehicle.getVehicleBrand());
-		ps.setBoolean(7, true);
-		
-		ps.execute();
-		ps.close();
-	}
-	
-	public static void update(VehicleBean vehicle, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.vehicle"
-				+ "	SET vehicleplate=?, vehiclemodel=?, vehiclelaunchyear=?, vehiclecategory=?, dailyvalue=?, brandid=?"
-				+ "	WHERE public.vehicle.vehicleid=?");
-		ps.setString(1, vehicle.getVehiclePlate());
-		ps.setString(2, vehicle.getVehicleModel());
-		ps.setInt(3,  vehicle.getVehicleLaunchYear());
-		ps.setInt(4, vehicle.getVehicleCategory().ordinal());
-		ps.setDouble(5, vehicle.getDailyValue());
-		ps.setString(6, vehicle.getVehicleBrand());
-		
-		ps.execute();
-		ps.close();
-	}
-	
-	public static void detele(VehicleBean vehicle, Connection connection) throws SQLException {
-		PreparedStatement ps;
-		ps = connection.prepareStatement("UPDATE public.vehicle"
-				+ " SET isActive = ?"
-				+ "	WHERE public.vehicle.vehicleid=?");
-		ps.setBoolean(1, false);
-		ps.setInt(2, vehicle.getVehicleId());
-		
-		ps.execute();
-		ps.close();
-	}
-	
-	public static ArrayList<VehicleBean> listAll(Connection con) throws SQLException {
-		Statement st;
-		ArrayList<VehicleBean> list = new ArrayList<VehicleBean>();
-		
-		st = (Statement) con.createStatement();
-		String query = "SELECT vehicleid, vehicleplate, vehiclemodel, vehiclelaunchyear, vehiclecategory, dailyvalue, vehiclebrand"
-				+ " FROM public.vehicle WHERE public.vehicle.isactive = true;";
-		ResultSet result = st.executeQuery(query);
-		
-	    while(result.next()) {
-	        list.add(new VehicleBean(result.getInt(1), result.getString(2), result.getString(3), result.getInt(4), result.getString(7),
-	        		VehicleCategory.fromOrdinal(result.getInt(5)), result.getDouble(6)));
-	    }
-	    
-	    return list;
-	}
+    public static void create(VehicleBean vehicle, MongoDatabase connection) {
+    	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
 
-	public static ArrayList<VehicleBean> listBySearch(VehicleBean vehicle, Connection con) throws SQLException {
-		PreparedStatement ps;
-		ArrayList<VehicleBean> list = new ArrayList<VehicleBean>();
-		String selectClause = "SELECT vehicleid, vehicleplate, vehiclemodel, vehiclelaunchyear, vehiclecategory, dailyvalue, vehiclebrand FROM public.vehicle";
-		String whereClause;
-		
-		if(vehicle.getVehiclePlate() != null) {
-			whereClause = " WHERE public.vehicle.vehicleplate ILIKE ? AND public.vehicle.isactive = true;";
-			ps = con.prepareStatement(selectClause + whereClause);
-			ps.setString(1, "%" + vehicle.getVehiclePlate() + "%");
-		} else if(vehicle.getVehicleModel() != null) {
-			whereClause = " WHERE public.vehicle.vehiclemodel ILIKE ? AND public.vehicle.isactive = true;";
-			ps = con.prepareStatement(selectClause + whereClause);
-			ps.setString(1,"%" + vehicle.getVehicleModel() + "%");
-		} else if(vehicle.getVehicleCategory() != null) {
-			whereClause = " WHERE public.vehicle.vehiclecategory = ? AND public.vehicle.isactive = true;";
-			ps = con.prepareStatement(selectClause + whereClause);
-			ps.setInt(1, vehicle.getVehicleCategory().ordinal());
-		} else if(vehicle.getDailyValue() != null) {
-			whereClause = " WHERE public.vehicle.dailyvalue <= ? AND public.vehicle.isactive = true;";
-			ps = con.prepareStatement(selectClause + whereClause);
-			ps.setDouble(1, vehicle.getDailyValue());
-		} else {
-			whereClause = " WHERE public.vehicle.vehiclebrand ILIKE ? AND public.vehicle.isactive = true;";
-			ps = con.prepareStatement(selectClause + whereClause);
-			ps.setString(1,"%" + vehicle.getVehicleBrand() + "%");
-		}
-		
-		ResultSet result = ps.executeQuery();
-		
-	    while(result.next()) {
-	        list.add(new VehicleBean(result.getInt(1), result.getString(2), result.getString(3), result.getInt(4), result.getString(7),
-	        		VehicleCategory.fromOrdinal(result.getInt(5)), result.getDouble(6)));
-	    }
-	    
-	    return list;
-	}
+        InsertOneResult result = vehicleCollection.insertOne(vehicle);
+
+        if (result.getInsertedId() != null) {
+            System.out.println("Veículo inserido com sucesso!");
+        } else {
+            System.out.println("Não foi possível inserir o veículo.");
+        }
+    }
+	
+    public static void update(VehicleBean vehicle, MongoDatabase connection) {
+    	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
+
+        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getVehicleId());
+        Bson update = Updates.combine(
+                Updates.set(VEHICLE_COLUMN_PLATE, vehicle.getVehiclePlate()),
+                Updates.set(VEHICLE_COLUMN_MODEL, vehicle.getVehicleModel()),
+                Updates.set(VEHICLE_COLUMN_LAUNCH_YEAR, vehicle.getVehicleLaunchYear()),
+                Updates.set(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal()),
+                Updates.set(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue()),
+                Updates.set(VEHICLE_COLUMN_BRAND, vehicle.getVehicleBrand()),
+                Updates.set(VEHICLE_COLUMN_IS_ACTIVE, true)
+        );
+
+        long modifiedCount = vehicleCollection.updateOne(filter, update).getModifiedCount();
+
+        if (modifiedCount > 0) {
+            System.out.println("Veículo atualizado com sucesso!");
+        } else {
+            System.out.println("Nenhum veículo foi atualizado.");
+        }
+    }
+	
+    public static void delete(VehicleBean vehicle, MongoDatabase connection) {
+    	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
+
+        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getVehicleId());
+        Bson update = Updates.set(VEHICLE_COLUMN_IS_ACTIVE, false);
+
+        long modifiedCount = vehicleCollection.updateOne(filter, update).getModifiedCount();
+
+        if (modifiedCount > 0) {
+            System.out.println("Veículo desativado com sucesso!");
+        } else {
+            System.out.println("Nenhum veículo foi desativado.");
+        }
+    }
+	
+    public static ArrayList<VehicleBean> listAll(MongoDatabase connection) {
+    	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
+
+        ArrayList<VehicleBean> list = new ArrayList<>();
+        Bson filter = Filters.eq(VEHICLE_COLUMN_IS_ACTIVE, true);
+        FindIterable<VehicleBean> result = vehicleCollection.find(filter);
+
+        for (VehicleBean vehicle : result) {
+            list.add(vehicle);
+        }
+
+        return list;
+    }
+
+    public static ArrayList<VehicleBean> listBySearch(VehicleBean vehicle, MongoDatabase connection) {
+    	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
+
+        ArrayList<VehicleBean> list = new ArrayList<>();
+        Bson filter = Filters.eq(VEHICLE_COLUMN_IS_ACTIVE, true);
+
+        if (vehicle.getVehiclePlate() != null) {
+            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_PLATE, ".*" + vehicle.getVehiclePlate() + ".*", "i"));
+        } else if (vehicle.getVehicleModel() != null) {
+            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_MODEL, ".*" + vehicle.getVehicleModel() + ".*", "i"));
+        } else if (vehicle.getVehicleCategory() != null) {
+            filter = Filters.and(filter, Filters.eq(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal()));
+        } else if (vehicle.getDailyValue() != null) {
+            filter = Filters.and(filter, Filters.lte(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue()));
+        } else if (vehicle.getVehicleBrand() != null) {
+            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_BRAND, ".*" + vehicle.getVehicleBrand() + ".*", "i"));
+        }
+
+        FindIterable<VehicleBean> result = vehicleCollection.find(filter);
+
+        for (VehicleBean v : result) {
+            list.add(v);
+        }
+
+        return list;
+    }
 }

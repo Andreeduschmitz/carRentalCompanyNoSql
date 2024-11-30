@@ -1,9 +1,11 @@
 package bean;
 
+import org.bson.types.ObjectId;
+
 import enums.VehicleCategory;
 
 public class VehicleBean {
-	private int vehicleId;
+	private ObjectId _id;
 	private String vehiclePlate;
 	private String vehicleModel;
 	private int vehicleLaunchYear;
@@ -11,6 +13,8 @@ public class VehicleBean {
 	private VehicleCategory vehicleCategory;
 	private Double dailyValue;
 	private boolean isActive;
+	
+	public VehicleBean() {}
 	
 	public VehicleBean(String vehiclePlate, String vehicleModel, int vehicleLaunchYear, String vehicleBrand, VehicleCategory vehicleCategory, Double dailyValue) {
 		this.vehiclePlate = vehiclePlate;
@@ -21,8 +25,8 @@ public class VehicleBean {
 		this.dailyValue = dailyValue;
 	}
 
-	public VehicleBean(int vehicleId, String vehiclePlate, String vehicleModel, int vehicleLaunchYear, String vehicleBrand, VehicleCategory vehicleCategory, Double dailyValue) {
-		this.vehicleId = vehicleId;
+	public VehicleBean(ObjectId vehicleId, String vehiclePlate, String vehicleModel, int vehicleLaunchYear, String vehicleBrand, VehicleCategory vehicleCategory, Double dailyValue) {
+		this._id = vehicleId;
 		this.vehiclePlate = vehiclePlate;
 		this.vehicleModel = vehicleModel;
 		this.vehicleLaunchYear = vehicleLaunchYear;
@@ -31,14 +35,12 @@ public class VehicleBean {
 		this.dailyValue = dailyValue;
 	}
 
-	public VehicleBean() {}
-
-	public int getVehicleId() {
-		return vehicleId;
+	public ObjectId getVehicleId() {
+		return _id;
 	}
 
-	public void setVehicleId(int vehicleId) {
-		this.vehicleId = vehicleId;
+	public void setVehicleId(ObjectId vehicleId) {
+		this._id = vehicleId;
 	}
 
 	public String getVehiclePlate() {

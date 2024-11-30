@@ -1,11 +1,11 @@
 package controller;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.RentalBean;
 import bean.VehicleBean;
@@ -16,7 +16,7 @@ import utils.Utils;
 
 public class VehicleController {
     
-	public static void createVehicle(Connection con) throws SQLException {
+	public static void createVehicle(MongoDatabase con) throws Exception {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar um novo veículo:");
         
@@ -44,7 +44,7 @@ public class VehicleController {
     }
 	
 
-    public static void updateVehicle(Connection con) throws SQLException {
+    public static void updateVehicle(MongoDatabase con) throws Exception {
     	VehicleBean vehicle = Utils.selectVehicle(con);
     	
     	if(vehicle == null) {
@@ -86,7 +86,7 @@ public class VehicleController {
         System.out.println("Informações atualizadas com sucesso!");
     }
     
-    public static void deleteVehicle(Connection con) throws SQLException {
+    public static void deleteVehicle(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	VehicleBean vehicle = Utils.selectVehicle(con);
@@ -105,14 +105,14 @@ public class VehicleController {
     	String option = input.next();
     	
     	if(option.equals("S") || option.equals("s")) {
-    		VehicleModel.detele(vehicle, con);
+    		VehicleModel.delete(vehicle, con);
     		System.out.println("Veículo excluído com sucesso");
     	} else {
     		System.out.println("Operação cancelada");
     	}
     }
     
-    public static void listAll(Connection con) throws SQLException {
+    public static void listAll(MongoDatabase con) throws Exception {
     	ArrayList<VehicleBean> vehicles = VehicleModel.listAll(con);
     	
     	if(vehicles == null || vehicles.isEmpty()) {
@@ -125,7 +125,7 @@ public class VehicleController {
     	}
     }
     
-    public static void listVehiclesBySearch(Connection con) throws SQLException {
+    public static void listVehiclesBySearch(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	VehicleBean vehicleSearch = new VehicleBean();
     	
@@ -169,7 +169,7 @@ public class VehicleController {
     	}
     }
     
-    public static void vehicleTotalBillingInPeriod(Connection con) throws SQLException {
+    public static void vehicleTotalBillingInPeriod(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	VehicleBean vehicle = Utils.selectVehicle(con);
     	

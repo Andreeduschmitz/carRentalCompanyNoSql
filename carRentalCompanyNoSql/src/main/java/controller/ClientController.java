@@ -1,9 +1,10 @@
 package controller;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import com.mongodb.client.MongoDatabase;
 
 import bean.ClientBean;
 import model.ClientModel;
@@ -11,7 +12,7 @@ import utils.Utils;
 
 public class ClientController {
 	
-    public static void createClient(Connection con) throws SQLException {
+    public static void createClient(MongoDatabase con) throws Exception {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar um novo cliente:");
         
@@ -19,7 +20,7 @@ public class ClientController {
         String clientName = input.nextLine();
 
         System.out.println("CPF: ");
-        long clientCpf = input.nextLong();
+        String clientCpf = input.next();
 
         System.out.println("Telefone para contato: ");
         String clientPhone = input.next();
@@ -27,7 +28,7 @@ public class ClientController {
         System.out.println("E-mail: ");
         String clientEmail = input.next();
 
-        ClientBean client = new ClientBean(clientName, clientCpf, clientPhone, clientEmail);
+        ClientBean client = new ClientBean(clientName, clientCpf, clientPhone, clientEmail, true);
         ClientModel.create(client, con);
 
         System.out.println("Cliente criado com sucesso!");
@@ -42,7 +43,7 @@ public class ClientController {
         }
     }
 
-    public static void updateClient(Connection con) throws SQLException {
+    public static void updateClient(MongoDatabase con) throws Exception {
     	ClientBean client = Utils.selectClient(con);
     	
     	if(client == null) {
@@ -90,11 +91,11 @@ public class ClientController {
         System.out.println("Informações atualizadas com sucesso!");
     }
     
-    public static void deleteClient(Connection con) throws SQLException {
+    public static void deleteClient(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	System.out.println("Digite o cpf do cliente que deseja excluir");
-    	long cpf = input.nextLong();
+    	String cpf = input.next();
     	
     	ClientBean client = Utils.selectClientBySearch(con, cpf, null);
     	
@@ -115,8 +116,8 @@ public class ClientController {
     	
     }
     
-    public static void listAllClients(Connection con) throws SQLException {
-    	ArrayList<ClientBean> clients = ClientModel.listAll(con);
+    public static void listAllClients(MongoDatabase connection) throws Exception {
+    	List<ClientBean> clients = ClientModel.listAll(connection);
     	
     	if(clients == null || clients.isEmpty()) {
     		System.out.println("Não há nenhum cliente cadastrado");
@@ -128,19 +129,19 @@ public class ClientController {
     	}
     }
     
-    public static void listClientsBySeach(Connection con) throws SQLException {
+    public static void listClientsBySeach(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	
     	System.out.println("Qual a característica do cliente você deseja utilizar na busca?\n1 - cpf\n2 - nome");
 		
     	int index = Utils.indexSelector(1, 2);
 		
-		long cpf = 0;
+		String cpf = "";
 		String name = null;
 		
 		if(index == 1) {
 			System.out.println("Digite o cpf que deseja pesquisar:");
-			cpf = input.nextLong();
+			cpf = input.next();
 		} else {
 			System.out.println("Digite o nome que deseja pesquisar");
 			name = input.next();
@@ -149,7 +150,7 @@ public class ClientController {
 		ClientController.listClientsBySeach(con, cpf, name);
     }
     
-    public static void listClientsBySeach(Connection con, long cpf, String name) throws SQLException {
+    public static void listClientsBySeach(MongoDatabase con, String cpf, String name) throws Exception {
     	ArrayList<ClientBean> clients = ClientModel.search(cpf, name, con);
 
     	if(clients == null || clients.isEmpty()) {

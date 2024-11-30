@@ -1,13 +1,12 @@
 package menu;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.mongodb.client.MongoDatabase;
 
 import utils.Utils;
 
 public class MainMenu {
 
-	public static void mainMenu(Connection con) throws SQLException {
+	public static void mainMenu(MongoDatabase con) throws Exception {
 		int opcao;
 		System.out.println("Bem vindo à D&N Car - Locações!!!");
 
