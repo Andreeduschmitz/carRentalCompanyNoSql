@@ -2,20 +2,22 @@ package bean;
 
 import java.sql.Date;
 
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class RentalBean {
+	@BsonId
 	private ObjectId _id;
 	private Date startDate;
 	private Date endDate;
-	private ObjectId renovationId;
-	private ObjectId vehicleId;
-	private ObjectId sellerId;
-	private ObjectId clientId;
+	private String renovationId;
+	private String vehicleId;
+	private String sellerId;
+	private String clientId;
 	
 	public RentalBean() {}
 
-	public RentalBean(Date startDate, Date endDate, ObjectId renovationId, ObjectId vehicleId, ObjectId sellerId, ObjectId clientId) {
+	public RentalBean(Date startDate, Date endDate, String renovationId, String vehicleId, String sellerId, String clientId) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.renovationId = renovationId;
@@ -24,7 +26,7 @@ public class RentalBean {
 		this.clientId = clientId;
 	}
 
-	public RentalBean(ObjectId rentalId, Date startDate, Date endDate, ObjectId renovationId, ObjectId vehicleId, ObjectId sellerId, ObjectId clientId) {
+	public RentalBean(ObjectId rentalId, Date startDate, Date endDate, String renovationId, String vehicleId, String sellerId, String clientId) {
 		this._id = rentalId;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -34,10 +36,12 @@ public class RentalBean {
 		this.clientId = clientId;
 	}
 
+	@BsonId
 	public ObjectId getRentalId() {
 		return _id;
 	}
 
+	@BsonId
 	public void setRentalId(ObjectId rentalId) {
 		this._id = rentalId;
 	}
@@ -58,35 +62,35 @@ public class RentalBean {
 		this.endDate = endDate;
 	}
 
-	public ObjectId getRenovationId() {
+	public String getRenovationId() {
 		return renovationId;
 	}
 
-	public void setRenovationId(ObjectId renovationId) {
+	public void setRenovationId(String renovationId) {
 		this.renovationId = renovationId;
 	}
 
-	public ObjectId getVehicleId() {
+	public String getVehicleId() {
 		return vehicleId;
 	}
 
-	public void setVehicleId(ObjectId vehicleId) {
+	public void setVehicleId(String vehicleId) {
 		this.vehicleId = vehicleId;
 	}
 
-	public ObjectId getSellerId() {
+	public String getSellerId() {
 		return sellerId;
 	}
 
-	public void setSellerId(ObjectId sellerId) {
+	public void setSellerId(String sellerId) {
 		this.sellerId = sellerId;
 	}
 
-	public ObjectId getClientId() {
+	public String getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(ObjectId clientId) {
+	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
 

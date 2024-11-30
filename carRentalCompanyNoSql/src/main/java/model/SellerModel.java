@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -22,7 +21,7 @@ public class SellerModel {
     public static String SELLER_COLUMN_NAME = "sellerName";
     public static String SELLER_COLUMN_PHONE = "sellerPhone";
     public static String SELLER_COLUMN_EMAIL = "sellerEmail";
-    public static String SELLER_COLUMN_IS_ACTIVE = "isActive";
+    public static String SELLER_COLUMN_IS_ACTIVE = "active";
 
     public static void create(SellerBean seller, MongoDatabase connection) {
     	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
@@ -76,9 +75,8 @@ public class SellerModel {
 
         ArrayList<SellerBean> list = new ArrayList<>();
         Bson filter = Filters.eq(SELLER_COLUMN_IS_ACTIVE, true);
-        FindIterable<SellerBean> result = sellerCollection.find(filter);
 
-        for (SellerBean seller : result) {
+        for (SellerBean seller : sellerCollection.find(filter)) {
             list.add(seller);
         }
 
@@ -93,9 +91,8 @@ public class SellerModel {
                 Filters.regex(SELLER_COLLECTION_NAME, ".*" + name + ".*", "i"),
                 Filters.eq(SELLER_COLUMN_IS_ACTIVE, true)
         );
-        FindIterable<SellerBean> result = sellerCollection.find(filter);
 
-        for (SellerBean seller : result) {
+        for (SellerBean seller : sellerCollection.find(filter)) {
             list.add(seller);
         }
 

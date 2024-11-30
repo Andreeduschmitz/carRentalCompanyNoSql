@@ -46,7 +46,7 @@ public class RentalController {
         	return;
         }
 
-        RentalBean rental = new RentalBean(startDate, endDate, null, vehicle.getVehicleId(), seller.getSellerId(), client.getClientId());
+        RentalBean rental = new RentalBean(startDate, endDate, null, vehicle.getVehicleId().toHexString(), seller.getSellerId().toHexString(), client.getId().toHexString());
         RentalModel.createRental(rental, con);
         System.out.println("Locação criada com sucesso!");
     }
@@ -83,7 +83,7 @@ public class RentalController {
         System.out.println("Data de término (formato dd-MM-yyyy): ");
         Date endDate = Utils.safeDateInput();
         
-        RentalBean renovatedRental = new RentalBean(startDate, endDate, rental.getRentalId(), rental.getVehicleId(), seller.getSellerId(), client.getClientId());
+        RentalBean renovatedRental = new RentalBean(startDate, endDate, rental.getRentalId().toHexString(), rental.getVehicleId(), seller.getSellerId().toHexString(), client.getId().toHexString());
         RentalModel.createRenovation(renovatedRental, con);
         System.out.println("Locação renovada com sucesso!");
     }

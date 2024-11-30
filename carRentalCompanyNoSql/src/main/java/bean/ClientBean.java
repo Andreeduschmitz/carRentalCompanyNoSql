@@ -1,8 +1,10 @@
 package bean;
 
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class ClientBean {
+	@BsonId
 	private ObjectId _id;
 	private String clientName;
 	private String clientCpf;
@@ -29,11 +31,11 @@ public class ClientBean {
 		this.isActive = isActive;
 	}
 
-	public ObjectId getClientId() {
+	public ObjectId getId() {
 		return _id;
 	}
 
-	public void setClientId(ObjectId clientId) {
+	public void setId(ObjectId clientId) {
 		this._id = clientId;
 	}
 

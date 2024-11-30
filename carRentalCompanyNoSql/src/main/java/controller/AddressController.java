@@ -44,7 +44,7 @@ public class AddressController {
             addressComplement = input.next();
         }
 
-        AddressBean address = new AddressBean(addressCep, addressStreet, addressNeighborhood, addressNumber, addressComplement, client.getClientId());
+        AddressBean address = new AddressBean(addressCep, addressStreet, addressNeighborhood, addressNumber, addressComplement, client.getId().toHexString());
         AddressModel.create(address, connection);
         System.out.println("Endereço criado com sucesso!");
     }

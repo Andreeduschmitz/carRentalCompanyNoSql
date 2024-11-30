@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -24,6 +23,7 @@ public class AddressModel {
 	public static String ADDRESS_COLUMN_NEIGHBORHOOD = "addressNeighborhood";
 	public static String ADDRESS_COLUMN_NUMBER = "addressNumber";
 	public static String ADDRESS_COLUMN_COMPLEMENT = "addressComplement";
+	public static String ADDRESS_COLUMN_CLIENT_ID = "clientId";
 
     public static void create(AddressBean address, MongoDatabase connection) {
     	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
@@ -65,11 +65,10 @@ public class AddressModel {
     public static ArrayList<AddressBean> findAddressByClient(ClientBean client, MongoDatabase connection) throws Exception {
     	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
     	
-        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, client.getClientId());
-        FindIterable<AddressBean> result = addressCollection.find(filter);
+        Bson filter = Filters.eq(ADDRESS_COLUMN_CLIENT_ID, client.getId().toHexString());
         ArrayList<AddressBean> addresses = new ArrayList<>();
         
-        for (AddressBean address : result) {
+        for (AddressBean address : addressCollection.find(filter)) {
             addresses.add(address);
         }
         

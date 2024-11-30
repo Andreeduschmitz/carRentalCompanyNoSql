@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -25,7 +24,7 @@ public class VehicleModel {
     public static String VEHICLE_COLUMN_BRAND = "vehicleBrand";
     public static String VEHICLE_COLUMN_CATEGORY = "vehicleCategory";
     public static String VEHICLE_COLUMN_DAILY_VALUE = "dailyValue";
-    public static String VEHICLE_COLUMN_IS_ACTIVE = "isActive";
+    public static String VEHICLE_COLUMN_IS_ACTIVE = "active";
 
     public static void create(VehicleBean vehicle, MongoDatabase connection) {
     	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
@@ -82,9 +81,8 @@ public class VehicleModel {
 
         ArrayList<VehicleBean> list = new ArrayList<>();
         Bson filter = Filters.eq(VEHICLE_COLUMN_IS_ACTIVE, true);
-        FindIterable<VehicleBean> result = vehicleCollection.find(filter);
 
-        for (VehicleBean vehicle : result) {
+        for (VehicleBean vehicle : vehicleCollection.find(filter)) {
             list.add(vehicle);
         }
 
@@ -95,23 +93,24 @@ public class VehicleModel {
     	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
 
         ArrayList<VehicleBean> list = new ArrayList<>();
-        Bson filter = Filters.eq(VEHICLE_COLUMN_IS_ACTIVE, true);
+        ArrayList<Bson> filtersList = new ArrayList<>();
+        filtersList.add(Filters.eq(VEHICLE_COLUMN_IS_ACTIVE, true));
 
         if (vehicle.getVehiclePlate() != null) {
-            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_PLATE, ".*" + vehicle.getVehiclePlate() + ".*", "i"));
+        	filtersList.add(Filters.and(Filters.regex(VEHICLE_COLUMN_PLATE, ".*" + vehicle.getVehiclePlate() + ".*", "i")));
         } else if (vehicle.getVehicleModel() != null) {
-            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_MODEL, ".*" + vehicle.getVehicleModel() + ".*", "i"));
+        	filtersList.add(Filters.and(Filters.regex(VEHICLE_COLUMN_MODEL, ".*" + vehicle.getVehicleModel() + ".*", "i")));
         } else if (vehicle.getVehicleCategory() != null) {
-            filter = Filters.and(filter, Filters.eq(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal()));
+        	filtersList.add(Filters.and(Filters.eq(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal())));
         } else if (vehicle.getDailyValue() != null) {
-            filter = Filters.and(filter, Filters.lte(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue()));
+        	filtersList.add(Filters.and(Filters.lte(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue())));
         } else if (vehicle.getVehicleBrand() != null) {
-            filter = Filters.and(filter, Filters.regex(VEHICLE_COLUMN_BRAND, ".*" + vehicle.getVehicleBrand() + ".*", "i"));
+        	filtersList.add(Filters.and(Filters.regex(VEHICLE_COLUMN_BRAND, ".*" + vehicle.getVehicleBrand() + ".*", "i")));
         }
+        
+        Bson filter = filtersList.isEmpty() ? Filters.empty() : Filters.and(filtersList);
 
-        FindIterable<VehicleBean> result = vehicleCollection.find(filter);
-
-        for (VehicleBean v : result) {
+        for (VehicleBean v : vehicleCollection.find(filter)) {
             list.add(v);
         }
 

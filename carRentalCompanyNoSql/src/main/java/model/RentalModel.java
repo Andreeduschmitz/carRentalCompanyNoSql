@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -48,11 +47,10 @@ public class RentalModel {
     public static ArrayList<RentalBean> searchRentalByClient(ClientBean client, MongoDatabase connection) {
     	MongoCollection<RentalBean> rentalCollection = connection.getCollection(RENTAL_COLLECTION_NAME, RentalBean.class);
 
-        Bson filter = Filters.eq(ClientModel.CLIENT_COLUMN_ID, client.getClientId());
-        FindIterable<RentalBean> result = rentalCollection.find(filter);
+        Bson filter = Filters.eq(RENTAL_COLUMN_CLIENT_ID, client.getId().toHexString());
         ArrayList<RentalBean> rentals = new ArrayList<>();
 
-        for (RentalBean rental : result) {
+        for (RentalBean rental : rentalCollection.find(filter)) {
             rentals.add(rental);
         }
 
@@ -62,11 +60,10 @@ public class RentalModel {
     public static ArrayList<RentalBean> searchRentalByVehicle(VehicleBean vehicle, MongoDatabase connection) {
     	MongoCollection<RentalBean> rentalCollection = connection.getCollection(RENTAL_COLLECTION_NAME, RentalBean.class);
 
-        Bson filter = Filters.eq(VehicleModel.VEHICLE_COLUMN_ID, vehicle.getVehicleId());
-        FindIterable<RentalBean> result = rentalCollection.find(filter);
+        Bson filter = Filters.eq(RENTAL_COLUMN_VEHICLE_ID, vehicle.getVehicleId().toHexString());
         ArrayList<RentalBean> rentals = new ArrayList<>();
 
-        for (RentalBean rental : result) {
+        for (RentalBean rental : rentalCollection.find(filter)) {
             rentals.add(rental);
         }
 
@@ -80,10 +77,9 @@ public class RentalModel {
             Filters.gte(RENTAL_COLUMN_START_DATE, startDate),
             Filters.lte(RENTAL_COLUMN_END_DATE, endDate)
         );
-        FindIterable<RentalBean> result = rentalCollection.find(filter);
         ArrayList<RentalBean> rentals = new ArrayList<>();
 
-        for (RentalBean rental : result) {
+        for (RentalBean rental : rentalCollection.find(filter)) {
             rentals.add(rental);
         }
 
@@ -94,14 +90,13 @@ public class RentalModel {
     	MongoCollection<RentalBean> rentalCollection = connection.getCollection(RENTAL_COLLECTION_NAME, RentalBean.class);
 
         Bson filter = Filters.and(
-            Filters.eq(SellerModel.SELLER_COLUMN_ID, seller.getSellerId()),
+            Filters.eq(RENTAL_COLUMN_SELLER_ID, seller.getSellerId().toHexString()),
             Filters.gte(RENTAL_COLUMN_START_DATE, startDate),
             Filters.lte(RENTAL_COLUMN_END_DATE, endDate)
         );
-        FindIterable<RentalBean> result = rentalCollection.find(filter);
         ArrayList<RentalBean> rentals = new ArrayList<>();
 
-        for (RentalBean rental : result) {
+        for (RentalBean rental : rentalCollection.find(filter)) {
             rentals.add(rental);
         }
 
@@ -112,14 +107,13 @@ public class RentalModel {
     	MongoCollection<RentalBean> rentalCollection = connection.getCollection(RENTAL_COLLECTION_NAME, RentalBean.class);
 
         Bson filter = Filters.and(
-            Filters.eq(VehicleModel.VEHICLE_COLUMN_ID, vehicle.getVehicleId()),
+            Filters.eq(RENTAL_COLUMN_VEHICLE_ID, vehicle.getVehicleId().toHexString()),
             Filters.gte(RENTAL_COLUMN_START_DATE, startDate),
             Filters.lte(RENTAL_COLUMN_END_DATE, endDate)
         );
-        FindIterable<RentalBean> result = rentalCollection.find(filter);
         ArrayList<RentalBean> rentals = new ArrayList<>();
 
-        for (RentalBean rental : result) {
+        for (RentalBean rental : rentalCollection.find(filter)) {
             rentals.add(rental);
         }
 
@@ -130,7 +124,7 @@ public class RentalModel {
     public static long countAssociatedRentals(RentalBean rental, MongoDatabase connection) {
     	MongoCollection<RentalBean> rentalCollection = connection.getCollection(RENTAL_COLLECTION_NAME, RentalBean.class);
 
-        Bson filter = Filters.eq(RentalModel.RENTAL_COLUMN_RENOVATION_ID, rental.getRentalId());
+        Bson filter = Filters.eq(RENTAL_COLUMN_RENOVATION_ID, rental.getRentalId().toHexString());
         long count = rentalCollection.countDocuments(filter);
         
         return count;

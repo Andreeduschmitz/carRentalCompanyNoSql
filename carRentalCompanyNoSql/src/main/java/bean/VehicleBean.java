@@ -1,10 +1,12 @@
 package bean;
 
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 import enums.VehicleCategory;
 
 public class VehicleBean {
+	@BsonId
 	private ObjectId _id;
 	private String vehiclePlate;
 	private String vehicleModel;
@@ -35,10 +37,12 @@ public class VehicleBean {
 		this.dailyValue = dailyValue;
 	}
 
+	@BsonId
 	public ObjectId getVehicleId() {
 		return _id;
 	}
 
+	@BsonId
 	public void setVehicleId(ObjectId vehicleId) {
 		this._id = vehicleId;
 	}

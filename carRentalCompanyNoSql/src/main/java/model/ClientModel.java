@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -23,7 +22,7 @@ public class ClientModel {
 	public static String CLIENT_COLUMN_CPF = "clientCpf";
 	public static String CLIENT_COLUMN_PHONE= "clientPhone";
 	public static String CLIENT_COLUMN_EMAIL = "clientEmail";
-	public static String CLIENT_COLUMN_IS_ACTIVE = "isActive";
+	public static String CLIENT_COLUMN_IS_ACTIVE = "active";
 	
 	public static void create(ClientBean client, MongoDatabase connection) {
 		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
@@ -40,7 +39,7 @@ public class ClientModel {
 	public static void update(ClientBean client, MongoDatabase connection) {
 		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
 		
-		Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getClientId());
+		Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getId());
 
 		Bson updates = Updates.combine(
 			Updates.set(CLIENT_COLUMN_NAME, client.getClientName()),
@@ -62,7 +61,7 @@ public class ClientModel {
     public static void delete(ClientBean client, MongoDatabase connection) {
     	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
     	
-        Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getClientId());
+        Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getId());
         Bson update = Updates.set(CLIENT_COLUMN_IS_ACTIVE, false);
 
         long modifiedCount = clientCollection.updateOne(filter, update).getModifiedCount();
@@ -80,9 +79,8 @@ public class ClientModel {
         List<ClientBean> list = new ArrayList<>();
         
         Bson filter = Filters.eq(CLIENT_COLUMN_IS_ACTIVE, true);
-        FindIterable<ClientBean> result = clientCollection.find(filter);
 
-        for (ClientBean client : result) {
+        for (ClientBean client : clientCollection.find(filter)) {
             list.add(client);
         }
 
@@ -94,18 +92,19 @@ public class ClientModel {
     	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
 
         ArrayList<ClientBean> list = new ArrayList<>();
+        ArrayList<Bson> filtersList = new ArrayList<>();
         
-        Bson filter = Filters.and();
-
         if (name != null && !name.isEmpty()) {
-            filter = Filters.and(filter, Filters.regex(CLIENT_COLUMN_NAME, ".*" + name + ".*", "i"));
+            filtersList.add(Filters.regex(CLIENT_COLUMN_NAME, ".*" + name + ".*", "i"));
         }
 
         if (cpf != null && !cpf.isEmpty()) {
-            filter = Filters.and(filter, Filters.eq(CLIENT_COLUMN_CPF, cpf));
+            filtersList.add(Filters.eq(CLIENT_COLUMN_CPF, cpf));
         }
 
-        filter = Filters.and(filter, Filters.eq(CLIENT_COLUMN_IS_ACTIVE, true));
+        filtersList.add(Filters.eq(CLIENT_COLUMN_IS_ACTIVE, true));
+
+        Bson filter = filtersList.isEmpty() ? Filters.empty() : Filters.and(filtersList);
 
         for (ClientBean client : clientCollection.find(filter)) {
             list.add(client);
