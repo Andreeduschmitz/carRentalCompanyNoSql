@@ -24,19 +24,17 @@ public class ClientModel {
 	public static String CLIENT_COLUMN_EMAIL = "clientEmail";
 	public static String CLIENT_COLUMN_IS_ACTIVE = "active";
 	
-	public static void create(ClientBean client, MongoDatabase connection) {
+	public static void create(ClientBean client, MongoDatabase connection) throws Exception {
 		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
 		
 		InsertOneResult result = clientCollection.insertOne(client);
 		
-		if(result.getInsertedId() != null) {
-			System.out.println("Usuario inserido com sucesso!!");			
-		} else {
-			System.out.println("Não foi possivel inserir");
+		if(result.getInsertedId() == null) {
+			throw new Exception("Ocorreu um erro ao inserir o cliente no banco de dados.");
 		}
  	}
 	
-	public static void update(ClientBean client, MongoDatabase connection) {
+	public static void update(ClientBean client, MongoDatabase connection) throws Exception {
 		MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
 		
 		Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getId());
@@ -51,14 +49,12 @@ public class ClientModel {
 
 		long modifiedCount = clientCollection.updateOne(filter, updates).getModifiedCount();
 
-		if (modifiedCount > 0) {
-			System.out.println("Usuário atualizado com sucesso!");
-		} else {
-			System.out.println("Nenhum usuário foi atualizado.");
+		if (!(modifiedCount > 0)) {
+			throw new Exception("Ocorreu um erro ao atualizar o cliente no banco de dados.");
 		}
 	}
 	
-    public static void delete(ClientBean client, MongoDatabase connection) {
+    public static void delete(ClientBean client, MongoDatabase connection) throws Exception {
     	MongoCollection<ClientBean> clientCollection = connection.getCollection(CLIENT_COLLECTION_NAME, ClientBean.class);
     	
         Bson filter = Filters.eq(CLIENT_COLUMN_ID, client.getId());
@@ -66,10 +62,8 @@ public class ClientModel {
 
         long modifiedCount = clientCollection.updateOne(filter, update).getModifiedCount();
 
-        if (modifiedCount > 0) {
-            System.out.println("Usuário desativado com sucesso!");
-        } else {
-            System.out.println("Nenhum usuário foi desativado.");
+        if (!(modifiedCount > 0)) {
+        	throw new Exception("Ocorreu um erro ao remover o cliente no banco de dados.");
         }
     }
 	

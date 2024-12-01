@@ -1,10 +1,8 @@
 package bean;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class AddressBean {
-	@BsonId
 	private ObjectId _id;
 	private int addressCep;
 	private String addressStreet;
@@ -34,13 +32,11 @@ public class AddressBean {
 		this.clientId = clientId;
 	}
 
-	@BsonId
-	public ObjectId getAddressId() {
+	public ObjectId getId() {
 		return _id;
 	}
 
-	@BsonId
-	public void setAddressId(ObjectId adressId) {
+	public void setId(ObjectId adressId) {
 		this._id = adressId;
 	}
 

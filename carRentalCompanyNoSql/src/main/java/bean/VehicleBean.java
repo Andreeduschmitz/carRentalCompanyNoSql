@@ -1,12 +1,10 @@
 package bean;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 import enums.VehicleCategory;
 
 public class VehicleBean {
-	@BsonId
 	private ObjectId _id;
 	private String vehiclePlate;
 	private String vehicleModel;
@@ -25,6 +23,7 @@ public class VehicleBean {
 		this.vehicleBrand = vehicleBrand;
 		this.vehicleCategory = vehicleCategory;
 		this.dailyValue = dailyValue;
+		this.isActive = true;
 	}
 
 	public VehicleBean(ObjectId vehicleId, String vehiclePlate, String vehicleModel, int vehicleLaunchYear, String vehicleBrand, VehicleCategory vehicleCategory, Double dailyValue) {
@@ -35,15 +34,14 @@ public class VehicleBean {
 		this.vehicleBrand = vehicleBrand;
 		this.vehicleCategory = vehicleCategory;
 		this.dailyValue = dailyValue;
+		this.isActive = true;
 	}
 
-	@BsonId
-	public ObjectId getVehicleId() {
+	public ObjectId getId() {
 		return _id;
 	}
 
-	@BsonId
-	public void setVehicleId(ObjectId vehicleId) {
+	public void setId(ObjectId vehicleId) {
 		this._id = vehicleId;
 	}
 
@@ -105,7 +103,7 @@ public class VehicleBean {
 
 	@Override
 	public String toString() {
-	    return String.format("Veículo: %s - Placa: %s - Modelo: %s - Ano: %d - Marca: %s - Categoria: %s - Valor Diário: R$ %.2f",
+	    return String.format("Veículo: %s - Placa: %s - Modelo: %s - Ano: %d - Marca: %s - Categoria: %s - Valor da Diária: R$ %.2f",
 	            vehicleModel,
 	            vehiclePlate,
 	            vehicleModel,

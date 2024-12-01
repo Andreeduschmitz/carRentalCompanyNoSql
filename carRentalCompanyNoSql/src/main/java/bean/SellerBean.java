@@ -1,10 +1,8 @@
 package bean;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class SellerBean {
-	@BsonId
 	private ObjectId _id;
 	private String sellerName;
 	private String sellerPhone;
@@ -17,6 +15,8 @@ public class SellerBean {
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 		this.sellerEmail = sellerEmail;
+		this.isActive = true;
+		
 	}
 
 	public SellerBean(ObjectId sellerId, String sellerName, String sellerPhone, String sellerEmail) {
@@ -24,15 +24,14 @@ public class SellerBean {
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 		this.sellerEmail = sellerEmail;
+		this.isActive = true;
 	}
 	
-	@BsonId
-	public ObjectId getSellerId() {
+	public ObjectId getId() {
 		return _id;
 	}
 
-	@BsonId
-	public void setSellerId(ObjectId sellerId) {
+	public void setId(ObjectId sellerId) {
 		this._id = sellerId;
 	}
 

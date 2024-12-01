@@ -25,22 +25,20 @@ public class AddressModel {
 	public static String ADDRESS_COLUMN_COMPLEMENT = "addressComplement";
 	public static String ADDRESS_COLUMN_CLIENT_ID = "clientId";
 
-    public static void create(AddressBean address, MongoDatabase connection) {
+    public static void create(AddressBean address, MongoDatabase connection) throws Exception {
     	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
     	
         InsertOneResult result = addressCollection.insertOne(address);
 
-        if (result.getInsertedId() != null) {
-            System.out.println("Endereço inserido com sucesso!");
-        } else {
-            System.out.println("Não foi possível inserir o endereço.");
+        if (result.getInsertedId() == null) {
+            throw new Exception("Ocorreu um erro ao inserir o endereço no banco de dados.");
         }
     }
 	
     public static void update(AddressBean address, MongoDatabase connection) throws Exception {
     	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
     	
-        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getAddressId());
+        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getId());
 
         Bson updateOperation = Updates.combine(
             Updates.set(ADDRESS_COLUMN_CEP, address.getAddressCep()),
@@ -57,7 +55,7 @@ public class AddressModel {
     public static void delete(AddressBean address, MongoDatabase connection) throws Exception {
     	MongoCollection<AddressBean> addressCollection = connection.getCollection(ADDRESS_COLLECTION_NAME, AddressBean.class);
     	
-        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getAddressId());
+        Bson filter = Filters.eq(ADDRESS_COLUMN_ID, address.getId());
         addressCollection.deleteOne(filter);
     }
 

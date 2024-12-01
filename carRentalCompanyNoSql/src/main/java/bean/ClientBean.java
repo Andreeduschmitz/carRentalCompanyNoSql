@@ -1,10 +1,8 @@
 package bean;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class ClientBean {
-	@BsonId
 	private ObjectId _id;
 	private String clientName;
 	private String clientCpf;

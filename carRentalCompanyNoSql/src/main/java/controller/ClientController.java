@@ -61,7 +61,6 @@ public class ClientController {
 			switch (option) {
 				case 1:
 					System.out.println("Digite o nome completo atualizado: ");
-					input.nextLine();
 					String name = input.nextLine();
 					client.setClientName(name);
 					break;

@@ -26,27 +26,25 @@ public class VehicleModel {
     public static String VEHICLE_COLUMN_DAILY_VALUE = "dailyValue";
     public static String VEHICLE_COLUMN_IS_ACTIVE = "active";
 
-    public static void create(VehicleBean vehicle, MongoDatabase connection) {
+    public static void create(VehicleBean vehicle, MongoDatabase connection) throws Exception {
     	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
 
         InsertOneResult result = vehicleCollection.insertOne(vehicle);
 
-        if (result.getInsertedId() != null) {
-            System.out.println("Veículo inserido com sucesso!");
-        } else {
-            System.out.println("Não foi possível inserir o veículo.");
+        if (result.getInsertedId() == null) {
+        	throw new Exception("Ocorreu um erro ao inserir o veículo no banco de dados.");
         }
     }
 	
-    public static void update(VehicleBean vehicle, MongoDatabase connection) {
+    public static void update(VehicleBean vehicle, MongoDatabase connection) throws Exception {
     	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
 
-        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getVehicleId());
+        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getId());
         Bson update = Updates.combine(
                 Updates.set(VEHICLE_COLUMN_PLATE, vehicle.getVehiclePlate()),
                 Updates.set(VEHICLE_COLUMN_MODEL, vehicle.getVehicleModel()),
                 Updates.set(VEHICLE_COLUMN_LAUNCH_YEAR, vehicle.getVehicleLaunchYear()),
-                Updates.set(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal()),
+                Updates.set(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory()),
                 Updates.set(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue()),
                 Updates.set(VEHICLE_COLUMN_BRAND, vehicle.getVehicleBrand()),
                 Updates.set(VEHICLE_COLUMN_IS_ACTIVE, true)
@@ -54,25 +52,21 @@ public class VehicleModel {
 
         long modifiedCount = vehicleCollection.updateOne(filter, update).getModifiedCount();
 
-        if (modifiedCount > 0) {
-            System.out.println("Veículo atualizado com sucesso!");
-        } else {
-            System.out.println("Nenhum veículo foi atualizado.");
+        if (!(modifiedCount > 0)) {
+        	throw new Exception("Ocorreu um erro ao atualizar o veículo no banco de dados.");
         }
     }
 	
-    public static void delete(VehicleBean vehicle, MongoDatabase connection) {
+    public static void delete(VehicleBean vehicle, MongoDatabase connection) throws Exception {
     	MongoCollection<VehicleBean> vehicleCollection = connection.getCollection(VEHICLE_COLLECTION_NAME, VehicleBean.class);
 
-        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getVehicleId());
+        Bson filter = Filters.eq(VEHICLE_COLUMN_ID, vehicle.getId());
         Bson update = Updates.set(VEHICLE_COLUMN_IS_ACTIVE, false);
 
         long modifiedCount = vehicleCollection.updateOne(filter, update).getModifiedCount();
 
-        if (modifiedCount > 0) {
-            System.out.println("Veículo desativado com sucesso!");
-        } else {
-            System.out.println("Nenhum veículo foi desativado.");
+        if (!(modifiedCount > 0)) {
+        	throw new Exception("Ocorreu um erro ao remover o veículo no banco de dados.");
         }
     }
 	
@@ -101,7 +95,7 @@ public class VehicleModel {
         } else if (vehicle.getVehicleModel() != null) {
         	filtersList.add(Filters.and(Filters.regex(VEHICLE_COLUMN_MODEL, ".*" + vehicle.getVehicleModel() + ".*", "i")));
         } else if (vehicle.getVehicleCategory() != null) {
-        	filtersList.add(Filters.and(Filters.eq(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory().ordinal())));
+        	filtersList.add(Filters.and(Filters.eq(VEHICLE_COLUMN_CATEGORY, vehicle.getVehicleCategory())));
         } else if (vehicle.getDailyValue() != null) {
         	filtersList.add(Filters.and(Filters.lte(VEHICLE_COLUMN_DAILY_VALUE, vehicle.getDailyValue())));
         } else if (vehicle.getVehicleBrand() != null) {

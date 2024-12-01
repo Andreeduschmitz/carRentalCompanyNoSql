@@ -16,31 +16,30 @@ public class SellerModel {
 	
     public static String SELLER_COLLECTION_NAME = "seller";
     
-    public static String SELLER_COLUMN_ID = "";
+    public static String SELLER_COLUMN_ID = "_id";
     
     public static String SELLER_COLUMN_NAME = "sellerName";
     public static String SELLER_COLUMN_PHONE = "sellerPhone";
     public static String SELLER_COLUMN_EMAIL = "sellerEmail";
     public static String SELLER_COLUMN_IS_ACTIVE = "active";
 
-    public static void create(SellerBean seller, MongoDatabase connection) {
+    public static void create(SellerBean seller, MongoDatabase connection) throws Exception {
     	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
 
         InsertOneResult result = sellerCollection.insertOne(seller);
 
-        if (result.getInsertedId() != null) {
-            System.out.println("Vendedor inserido com sucesso!");
-        } else {
-            System.out.println("Não foi possível inserir o vendedor.");
+        if (result.getInsertedId() == null) {
+        	throw new Exception("Ocorreu um erro ao inserir o vendedor no banco de dados.");
         }
     }
 	
-    public static void update(SellerBean seller, MongoDatabase connection) {
+    public static void update(SellerBean seller, MongoDatabase connection) throws Exception {
     	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
 
-        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getSellerId());
+        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getId());
+
         Bson update = Updates.combine(
-            Updates.set(SELLER_COLLECTION_NAME, seller.getSellerName()),
+            Updates.set(SELLER_COLUMN_NAME, seller.getSellerName()),	
             Updates.set(SELLER_COLUMN_PHONE, seller.getSellerPhone()),
             Updates.set(SELLER_COLUMN_EMAIL, seller.getSellerEmail()),
             Updates.set(SELLER_COLUMN_IS_ACTIVE, true)
@@ -48,25 +47,21 @@ public class SellerModel {
 
         long modifiedCount = sellerCollection.updateOne(filter, update).getModifiedCount();
 
-        if (modifiedCount > 0) {
-            System.out.println("Vendedor atualizado com sucesso!");
-        } else {
-            System.out.println("Nenhum vendedor foi atualizado.");
+        if (!(modifiedCount > 0)) {
+        	throw new Exception("Ocorreu um erro ao atualizar o vendedor no banco de dados.");
         }
     }
 	
-    public static void delete(SellerBean seller, MongoDatabase connection) {
+    public static void delete(SellerBean seller, MongoDatabase connection) throws Exception {
     	MongoCollection<SellerBean> sellerCollection = connection.getCollection(SELLER_COLLECTION_NAME, SellerBean.class);
 
-        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getSellerId());
+        Bson filter = Filters.eq(SELLER_COLUMN_ID, seller.getId());
         Bson update = Updates.set(SELLER_COLUMN_IS_ACTIVE, false);
 
         long modifiedCount = sellerCollection.updateOne(filter, update).getModifiedCount();
 
-        if (modifiedCount > 0) {
-            System.out.println("Vendedor desativado com sucesso!");
-        } else {
-            System.out.println("Nenhum vendedor foi desativado.");
+        if (!(modifiedCount > 0)) {
+        	throw new Exception("Ocorreu um erro ao remover o vendedor no banco de dados.");
         }
     }
 	
@@ -88,7 +83,7 @@ public class SellerModel {
 
         ArrayList<SellerBean> list = new ArrayList<>();
         Bson filter = Filters.and(
-                Filters.regex(SELLER_COLLECTION_NAME, ".*" + name + ".*", "i"),
+                Filters.regex(SELLER_COLUMN_NAME, ".*" + name + ".*", "i"),
                 Filters.eq(SELLER_COLUMN_IS_ACTIVE, true)
         );
 

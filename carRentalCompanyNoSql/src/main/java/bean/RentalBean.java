@@ -1,12 +1,11 @@
 package bean;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
 public class RentalBean {
-	@BsonId
 	private ObjectId _id;
 	private Date startDate;
 	private Date endDate;
@@ -36,13 +35,11 @@ public class RentalBean {
 		this.clientId = clientId;
 	}
 
-	@BsonId
-	public ObjectId getRentalId() {
+	public ObjectId getId() {
 		return _id;
 	}
 
-	@BsonId
-	public void setRentalId(ObjectId rentalId) {
+	public void setId(ObjectId rentalId) {
 		this._id = rentalId;
 	}
 
@@ -96,9 +93,11 @@ public class RentalBean {
 
 	@Override
 	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
 	    return String.format("Locação: Início: %s - Fim: %s - Veículo ID: %s - Vendedor ID: %s - Cliente ID: %s",
-	            startDate,
-	            endDate,
+	    		sdf.format(startDate),
+	    		sdf.format(endDate),
 	            vehicleId,
 	            sellerId,
 	            clientId);

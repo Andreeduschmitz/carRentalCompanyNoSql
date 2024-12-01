@@ -37,11 +37,12 @@ public class AddressController {
 
         System.out.println("Deseja informar complemento? S/N");
         String option = input.next();
+        input.nextLine(); 
 
         String addressComplement = null;
         if (option.equals("S") || option.equals("s")) {
             System.out.println("Informe o complemento: ");
-            addressComplement = input.next();
+            addressComplement = input.nextLine();
         }
 
         AddressBean address = new AddressBean(addressCep, addressStreet, addressNeighborhood, addressNumber, addressComplement, client.getId().toHexString());
@@ -66,13 +67,14 @@ public class AddressController {
     	
     	System.out.println("Selecione do endereço que deseja atualizar");
     	
+    	int count = 1;
     	for(AddressBean address : addresses) {
-    		System.out.println(address.toString());
+    		System.out.println(count++ + " - " + address.toString());
     	}
     	
-		int index = Utils.indexSelector(0, addresses.size());
+		int index = Utils.indexSelector(1, addresses.size() + 1);
 		
-		AddressBean address = addresses.get(index);
+		AddressBean address = addresses.get(index - 1);
     	
         System.out.println("O que você deseja atualizar?\n1 - CEP\n2 - Rua\n3 - Bairro\n4 - Número\n5 - Complemento\n6 - Cancelar");
 
@@ -147,13 +149,14 @@ public class AddressController {
     	
     	System.out.println("Selecione o endereço que deseja excluir");
 
+    	int count = 1;
     	for(AddressBean address : addresses) {
-    		System.out.println(address.toString());
+    		System.out.println(count++ + " - " + address.toString());
     	}
     	
-        int index = Utils.indexSelector(0, addresses.size());
+        int index = Utils.indexSelector(1, addresses.size());
     	
-        AddressModel.delete(addresses.get(index), con);
+        AddressModel.delete(addresses.get(index - 1), con);
         System.out.println("Endereço excluído com sucesso!");
     }
     

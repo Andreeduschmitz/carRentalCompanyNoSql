@@ -1,6 +1,6 @@
 package controller;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,10 +19,10 @@ public class RentalController {
         Scanner input = new Scanner(System.in);
         System.out.println("Insira os dados abaixo para cadastrar uma nova locação:");
         
-        System.out.println("Data de início (formato dd-MM-yyyy):");
+        System.out.println("Data de início (formato dd/MM/yyyy):");
         Date startDate = Utils.safeDateInput();
 
-        System.out.println("Data de término (formato dd-MM-yyyy): ");
+        System.out.println("Data de término (formato dd/MM/yyyy): ");
         Date endDate = Utils.safeDateInput();
         
         System.out.println("Selecione o vendedor responsável:");
@@ -46,7 +46,7 @@ public class RentalController {
         	return;
         }
 
-        RentalBean rental = new RentalBean(startDate, endDate, null, vehicle.getVehicleId().toHexString(), seller.getSellerId().toHexString(), client.getId().toHexString());
+        RentalBean rental = new RentalBean(startDate, endDate, null, vehicle.getId().toHexString(), seller.getId().toHexString(), client.getId().toHexString());
         RentalModel.createRental(rental, con);
         System.out.println("Locação criada com sucesso!");
     }
@@ -77,13 +77,13 @@ public class RentalController {
     		return;
     	}
     	
-        System.out.println("Data de início (formato dd-MM-yyyy):");
+        System.out.println("Data de início (formato dd/MM/yyyy):");
         Date startDate = Utils.safeDateInput();
 
-        System.out.println("Data de término (formato dd-MM-yyyy): ");
+        System.out.println("Data de término (formato dd/MM/yyyy): ");
         Date endDate = Utils.safeDateInput();
         
-        RentalBean renovatedRental = new RentalBean(startDate, endDate, rental.getRentalId().toHexString(), rental.getVehicleId(), seller.getSellerId().toHexString(), client.getId().toHexString());
+        RentalBean renovatedRental = new RentalBean(startDate, endDate, rental.getId().toHexString(), rental.getVehicleId(), seller.getId().toHexString(), client.getId().toHexString());
         RentalModel.createRenovation(renovatedRental, con);
         System.out.println("Locação renovada com sucesso!");
     }
@@ -93,7 +93,7 @@ public class RentalController {
 		List<RentalBean> rentals = null;
 
 		System.out.println("Digite o índice da informação a qual deseja utilizar na pesquisa:");
-		System.out.println("1 - veículo\n2 - cliente\n3 - data inicial da locação");
+		System.out.println("1 - veículo\n2 - cliente\n3 - data da locação");
 
 		int index = Utils.indexSelector(1, 3);
 
@@ -119,10 +119,10 @@ public class RentalController {
 		        rentals = RentalModel.searchRentalByClient(client, con);
 				break;
 			case 3:
-				System.out.println("Digite a data inicial da busca (formato dd-MM-yyyy):");
+				System.out.println("Digite a data inicial da busca (formato dd/MM/yyyy):");
 		        Date startDate = Utils.safeDateInput();
 		        
-		        System.out.println("Digite a data final da busca (formato dd-MM-yyyy):");
+		        System.out.println("Digite a data final da busca (formato dd/MM/yyyy):");
 		        Date endDate = Utils.safeDateInput();
 		        
 		        rentals = RentalModel.searchRentalByDatePeriod(startDate, endDate, con);
@@ -163,10 +163,10 @@ public class RentalController {
 
 				break;
 			case 2:
-		        System.out.println("Data de início (formato dd-MM-yyyy):");
+		        System.out.println("Data de início (formato dd/MM/yyyy):");
 		        Date startDate = Utils.safeDateInput();
 
-		        System.out.println("Data de término (formato dd-MM-yyyy): ");
+		        System.out.println("Data de término (formato dd/MM/yyyy): ");
 		        Date endDate = Utils.safeDateInput();
 
 		        rentals = RentalModel.searchRentalByDatePeriod(startDate, endDate, con);

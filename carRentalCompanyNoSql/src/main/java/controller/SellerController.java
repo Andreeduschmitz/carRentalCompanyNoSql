@@ -1,6 +1,6 @@
 package controller;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -52,7 +52,6 @@ public class SellerController {
 			switch (option) {
 				case 1:
 					System.out.println("Digite o nome completo atualizado: ");
-					input.nextLine();
 					String name = input.nextLine();
 					seller.setSellerName(name);
 					break;
@@ -120,7 +119,7 @@ public class SellerController {
     public static void listSellersByName(MongoDatabase con) throws Exception {
     	Scanner input = new Scanner(System.in);
     	System.out.println("Digite o nome do vendedor que deseja buscar");
-    	String name = input.next();
+    	String name = input.nextLine();
     	SellerController.listSellersByName(con, name);
     }
     
@@ -128,7 +127,7 @@ public class SellerController {
     	ArrayList<SellerBean> sellers = SellerModel.searchByName(name, con);
     	
     	if(sellers == null || sellers.isEmpty()) {
-    		System.out.println("Não há nenhum vendedor cadastrado");
+    		System.out.println("Não há nenhum vendedor cadastrado com esse nome");
     	}
     	
     	for(SellerBean seller : sellers) {
@@ -144,10 +143,10 @@ public class SellerController {
     		return;
     	}
     	
-		System.out.println("Digite a data inicial do período (formato dd-MM-yyyy):");
+		System.out.println("Digite a data inicial do período (formato dd/MM/yyyy):");
         Date startDate = Utils.safeDateInput();
         
-        System.out.println("Digite a data final do período (formato dd-MM-yyyy):");
+        System.out.println("Digite a data final do período (formato dd/MM/yyyy):");
         Date endDate = Utils.safeDateInput();
         
         List<RentalBean> rentals = RentalModel.searchRentalByDatePeriodAndSeller(startDate, endDate, seller, con);

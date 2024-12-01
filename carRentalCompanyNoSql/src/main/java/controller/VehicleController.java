@@ -1,6 +1,6 @@
 package controller;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,7 +36,7 @@ public class VehicleController {
         String vehicleBrand = input.next();
 
         System.out.print("Valor da diária: ");
-        double dailyValue = input.nextDouble();
+        double dailyValue = Utils.safeInputDouble();
 
         VehicleBean vehicle = new VehicleBean(vehiclePlate, vehicleModel, vehicleLaunchYear, vehicleBrand,vehicleCategory, dailyValue);
         VehicleModel.create(vehicle, con);
@@ -60,27 +60,23 @@ public class VehicleController {
         	option = Utils.indexSelector(1, 3);
         	
             switch (option) {
-            case 1:
-                System.out.println("Digite a nova placa: ");
-                String plate = input.next();
-                vehicle.setVehiclePlate(plate);
-                break;
-
-            case 2:
-                System.out.println("Digite o novo valor da diária: ");
-                double value = input.nextDouble();
-                vehicle.setDailyValue(value);
-                break;
-                
-            case 3:
-            	break;
-            
-            default:
-            	System.out.println("Opção inválida!");
-            	return;
-        }
+	            case 1:
+	                System.out.println("Digite a nova placa: ");
+	                String plate = input.next();
+	                vehicle.setVehiclePlate(plate);
+	                break;
+	
+	            case 2:
+	                System.out.println("Digite o novo valor da diária: ");
+	                double value = input.nextDouble();
+	                vehicle.setDailyValue(value);
+	                break;
+	                
+	            case 3:
+	            	break;
+            }
         	
-        } while (option != 3);
+        } while (option < 1 || option > 3);
         
         VehicleModel.update(vehicle, con);
         System.out.println("Informações atualizadas com sucesso!");
@@ -130,7 +126,7 @@ public class VehicleController {
     	VehicleBean vehicleSearch = new VehicleBean();
     	
     	System.out.println("Digite o índice da característica do veículo a qual deseja utilizar na pesquisa:");
-    	System.out.println("1 - placa, 2 - modelo, 3 - categoria, 4 - valor máximo da diária, 5 - marca");
+    	System.out.println("1 - Placa\n2 - Modelo\n3 - Categoria\n4 - Valor máximo da diária\n5 - Marca");
     	
         int index = Utils.indexSelector(1, 5);
         
@@ -165,7 +161,7 @@ public class VehicleController {
     	}
     	
     	for(VehicleBean vehicle : vehicles) {
-    		System.out.println(vehicles.toString());
+    		System.out.println(vehicle.toString());
     	}
     }
     
@@ -177,10 +173,10 @@ public class VehicleController {
     		return;
     	}
     	
-		System.out.println("Digite a data inicial do período (formato dd-MM-yyyy):");
+		System.out.println("Digite a data inicial do período (formato dd/MM/yyyy):");
         Date startDate = Utils.safeDateInput();
         
-        System.out.println("Digite a data final do período (formato dd-MM-yyyy):");
+        System.out.println("Digite a data final do período (formato dd/MM/yyyy):");
         Date endDate = Utils.safeDateInput();
         
         List<RentalBean> rentals = RentalModel.searchRentalByVehicleAndPeriod(vehicle, startDate, endDate, con);

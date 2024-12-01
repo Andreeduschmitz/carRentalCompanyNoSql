@@ -1,7 +1,6 @@
 package utils;
 
-import java.sql.Date;
-import java.sql.SQLException;
+import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class Utils {
     	return VehicleCategory.fromOrdinal(option - 1);
     }
     
-    public static SellerBean selectSeller(MongoDatabase con) throws SQLException {
+    public static SellerBean selectSeller(MongoDatabase con) throws Exception {
     	ArrayList<SellerBean> sellers = SellerModel.listAll(con);
     	
     	if(sellers == null || sellers.isEmpty()) {
@@ -68,7 +67,7 @@ public class Utils {
         return sellers.get(index - 1);
     }
     
-    public static VehicleBean selectVehicle(MongoDatabase con) throws SQLException {
+    public static VehicleBean selectVehicle(MongoDatabase con) throws Exception {
     	ArrayList<VehicleBean> vehicles = VehicleModel.listAll(con);
     	
     	if(vehicles == null || vehicles.isEmpty()) {
@@ -90,7 +89,7 @@ public class Utils {
         return vehicles.get(index - 1);
     }
     
-    public static ClientBean selectClient(MongoDatabase con) throws SQLException {
+    public static ClientBean selectClient(MongoDatabase con) throws Exception {
     	List<ClientBean> clients = ClientModel.listAll(con);
     	
     	if(clients == null || clients.isEmpty()) {
@@ -134,7 +133,7 @@ public class Utils {
         return clients.get(index - 1);
     }
 
-	public static RentalBean selectRentalByClient(MongoDatabase con, ClientBean client) throws SQLException {
+	public static RentalBean selectRentalByClient(MongoDatabase con, ClientBean client) throws Exception {
 		ArrayList<RentalBean> rentals = RentalModel.searchRentalByClient(client, con);
 		
 		if(rentals == null || rentals.isEmpty()) {
@@ -156,7 +155,7 @@ public class Utils {
         return rentals.get(index - 1);
 	}
 	
-	public static Boolean isVehicleInUse(MongoDatabase con, VehicleBean vehicle) throws SQLException {
+	public static Boolean isVehicleInUse(MongoDatabase con, VehicleBean vehicle) throws Exception {
 		List<RentalBean> vehicleActiveRental = RentalModel.searchRentalByVehicle(vehicle, con);
 		
 		if(vehicleActiveRental == null || !vehicleActiveRental.isEmpty()) {
@@ -202,7 +201,7 @@ public class Utils {
 	
     public static Date safeDateInput() {
         Scanner input = new Scanner(System.in);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateFormat.setLenient(false);
 
         Date date = null;
@@ -212,7 +211,7 @@ public class Utils {
             String dateString = input.next();
 
             try {
-                java.util.Date utilDate = dateFormat.parse(dateString);
+                Date utilDate = dateFormat.parse(dateString);
                 date = new Date(utilDate.getTime());
                 valid = true;
             } catch (ParseException e) {
@@ -221,5 +220,25 @@ public class Utils {
         }
 
         return date;
+    }
+    
+    public static double safeInputDouble() {
+    	Scanner input = new Scanner(System.in);
+    	boolean valid = false;
+    	Double utilDouble = 0d;
+    	
+        while (!valid) {
+            String doubleString = input.next();
+            doubleString = doubleString.replace(",", ".");
+
+            try {
+                utilDouble = Double.parseDouble(doubleString);
+                valid = true;
+            } catch (Exception e) {
+                System.out.println("Valor inválido, tente novamente.");
+            }
+        }
+        
+        return utilDouble;
     }
 }
