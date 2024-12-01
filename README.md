@@ -14,14 +14,7 @@ Instruções para compilação:
 
 5 - Entre no diretório carRentalCompanyNoSql/carRentalCompanyNoSql/src/main/java/connection e configure a conexão com seu MongoDB local na classe Connection.java.
 
-6 - Utilize os arquivos dump do repositório presentes na pasta "dump MongoDb" e importe os mesmos em 5 collections pré-criadas com os seguintes nomes:
-    - address
-    - client
-    - rental
-    - seller
-    - vehicle
-
-Os nomes de cada arquivo json presente na pasta "dump MongoDb" sugerem a collection em que eles devem ser importados.
+6 - Utilize os arquivos dump do repositório presentes na pasta "dump MongoDb" e importe os mesmos em 5 collections pré-criadas com os seguintes nomes: address, client, rental, seller e vehicle. Os nomes de cada arquivo json presente na pasta "dump MongoDb" sugerem a collection em que eles devem ser importados.
 
 7 - Forneça permissão de execução ao arquivo run.sh do repositório com o comando "chmod +x run.sh".
 
