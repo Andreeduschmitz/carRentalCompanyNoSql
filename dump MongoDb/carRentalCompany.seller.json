@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "674c916a5edfd77d562e1bf8"
+  },
+  "active": true,
+  "sellerEmail": "andreluis@contato.com",
+  "sellerName": "André Luis",
+  "sellerPhone": "988146568"
+},
+{
+  "_id": {
+    "$oid": "674c91865edfd77d562e1bf9"
+  },
+  "active": true,
+  "sellerEmail": "marceloluis@contato.com",
+  "sellerName": "Marcelo Luis",
+  "sellerPhone": "996024974"
+}]

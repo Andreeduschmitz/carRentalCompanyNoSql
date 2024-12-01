@@ -1,0 +1,48 @@
+[{
+  "_id": {
+    "$oid": "674c91b95edfd77d562e1bfa"
+  },
+  "active": true,
+  "dailyValue": 88.2,
+  "vehicleBrand": "volkswagem",
+  "vehicleCategory": "HATCH",
+  "vehicleLaunchYear": 2008,
+  "vehicleModel": "gol",
+  "vehiclePlate": "mff5869"
+},
+{
+  "_id": {
+    "$oid": "674c91df5edfd77d562e1bfb"
+  },
+  "active": true,
+  "dailyValue": 102,
+  "vehicleBrand": "volkswagem",
+  "vehicleCategory": "SEDA",
+  "vehicleLaunchYear": 2012,
+  "vehicleModel": "voyage",
+  "vehiclePlate": "miy5233"
+},
+{
+  "_id": {
+    "$oid": "674c92185edfd77d562e1bfc"
+  },
+  "active": true,
+  "dailyValue": 130.75,
+  "vehicleBrand": "mitsubishi",
+  "vehicleCategory": "SUV",
+  "vehicleLaunchYear": 2008,
+  "vehicleModel": "pajero",
+  "vehiclePlate": "bra0000"
+},
+{
+  "_id": {
+    "$oid": "674c924e5edfd77d562e1bfd"
+  },
+  "active": true,
+  "dailyValue": 120.5,
+  "vehicleBrand": "volkswagem",
+  "vehicleCategory": "HATCH",
+  "vehicleLaunchYear": 2018,
+  "vehicleModel": "polo",
+  "vehiclePlate": "rah9998"
+}]

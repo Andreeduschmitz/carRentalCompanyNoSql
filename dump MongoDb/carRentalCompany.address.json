@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "674c906c5edfd77d562e1bf2"
+  },
+  "addressCep": 89219140,
+  "addressComplement": "Portão da esquerda",
+  "addressNeighborhood": "Costa e Silva",
+  "addressNumber": 176,
+  "addressStreet": "João Dietrich",
+  "clientId": "674c904a5edfd77d562e1bf1"
+},
+{
+  "_id": {
+    "$oid": "674c90bd5edfd77d562e1bf4"
+  },
+  "addressCep": 89235350,
+  "addressComplement": "casa verde",
+  "addressNeighborhood": "Boehmerwald",
+  "addressNumber": 97,
+  "addressStreet": "Juliano Busarello",
+  "clientId": "674c90935edfd77d562e1bf3"
+},
+{
+  "_id": {
+    "$oid": "674c911b5edfd77d562e1bf6"
+  },
+  "addressCep": 89111450,
+  "addressNeighborhood": "Frei Rogério",
+  "addressNumber": 188,
+  "addressStreet": "Hamilton Veran",
+  "clientId": "674c90fc5edfd77d562e1bf5"
+}]

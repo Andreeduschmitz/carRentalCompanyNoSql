@@ -1,0 +1,57 @@
+[{
+  "_id": {
+    "$oid": "674c92735edfd77d562e1bfe"
+  },
+  "clientId": "674c90935edfd77d562e1bf3",
+  "endDate": {
+    "$date": "2024-12-05T00:00:00.000Z"
+  },
+  "sellerId": "674c916a5edfd77d562e1bf8",
+  "startDate": {
+    "$date": "2024-12-02T00:00:00.000Z"
+  },
+  "vehicleId": "674c92185edfd77d562e1bfc"
+},
+{
+  "_id": {
+    "$oid": "674c92aea105656a4f88ed96"
+  },
+  "clientId": "674c904a5edfd77d562e1bf1",
+  "endDate": {
+    "$date": "2025-01-20T00:00:00.000Z"
+  },
+  "sellerId": "674c91865edfd77d562e1bf9",
+  "startDate": {
+    "$date": "2025-01-02T00:00:00.000Z"
+  },
+  "vehicleId": "674c91b95edfd77d562e1bfa"
+},
+{
+  "_id": {
+    "$oid": "674c92d3a105656a4f88ed97"
+  },
+  "clientId": "674c91485edfd77d562e1bf7",
+  "endDate": {
+    "$date": "2025-02-20T00:00:00.000Z"
+  },
+  "sellerId": "674c916a5edfd77d562e1bf8",
+  "startDate": {
+    "$date": "2025-02-13T00:00:00.000Z"
+  },
+  "vehicleId": "674c91df5edfd77d562e1bfb"
+},
+{
+  "_id": {
+    "$oid": "674c92fea105656a4f88ed98"
+  },
+  "clientId": "674c904a5edfd77d562e1bf1",
+  "endDate": {
+    "$date": "2025-01-31T00:00:00.000Z"
+  },
+  "renovationId": "674c92aea105656a4f88ed96",
+  "sellerId": "674c91865edfd77d562e1bf9",
+  "startDate": {
+    "$date": "2025-01-21T00:00:00.000Z"
+  },
+  "vehicleId": "674c91b95edfd77d562e1bfa"
+}]

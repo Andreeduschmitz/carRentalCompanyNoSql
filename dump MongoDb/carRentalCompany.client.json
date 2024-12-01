@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "674c904a5edfd77d562e1bf1"
+  },
+  "active": true,
+  "clientCpf": "09770087971",
+  "clientEmail": "andre@gmail.com",
+  "clientName": "André Schmitz",
+  "clientPhone": "991096542"
+},
+{
+  "_id": {
+    "$oid": "674c90935edfd77d562e1bf3"
+  },
+  "active": true,
+  "clientCpf": "11269250981",
+  "clientEmail": "mariana@gmail.com",
+  "clientName": "Mariana Rossdeutscher",
+  "clientPhone": "988075091"
+},
+{
+  "_id": {
+    "$oid": "674c90fc5edfd77d562e1bf5"
+  },
+  "active": true,
+  "clientCpf": "99823755691",
+  "clientEmail": "ilka@gmail.com",
+  "clientName": "Ilka Waltrick",
+  "clientPhone": "32224520"
+},
+{
+  "_id": {
+    "$oid": "674c91485edfd77d562e1bf7"
+  },
+  "active": true,
+  "clientCpf": "82137455900",
+  "clientEmail": "andreia@gmail.com",
+  "clientName": "Andréia Schmitz",
+  "clientPhone": "984959526"
+}]

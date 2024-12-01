@@ -5,14 +5,32 @@
 	<groupId>carRentalCompanyNoSql</groupId>
 	<artifactId>carRentalCompanyNoSql</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+	
 	<dependencies>
-
 		<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-sync</artifactId>
 			<version>5.2.1</version>
 		</dependency>
-
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>1.8</source> <!-- Versão do código-fonte -->
+					<target>1.8</target> <!-- Versão do bytecode gerado -->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
